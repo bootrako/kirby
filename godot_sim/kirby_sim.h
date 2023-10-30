@@ -14,6 +14,9 @@ public:
 
 protected:
 	static void _bind_methods();
+
+private:
+	int _get_number();
 };
 
 }
