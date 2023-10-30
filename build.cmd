@@ -1,18 +1,17 @@
 @echo off
 
 if "%~1" == "" (
-    set build_folder="godot_sim"
-    set args=
+    pushd godot_sim
+    scons
+    popd
 )
 if "%~1" == "editor" (
-    set build_folder="godot"
-    set args=
+    pushd godot
+    scons
+    popd
 )
 if "%~1" == "editor_debug" (
-    set build_folder="godot"
-    set args= dev_build="yes"
+    pushd godot
+    scons dev_build="yes"
+    popd
 )
-
-pushd %build_folder%
-scons %args%
-popd
