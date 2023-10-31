@@ -8,6 +8,14 @@ if "%~1" == "" (
     scons
     popd
 )
+if "%~1" == "debug" (
+    pushd sim
+    zig build
+    popd
+    pushd godot_sim
+    scons dev_build="yes"
+    popd
+)
 if "%~1" == "editor" (
     pushd godot
     scons
