@@ -1,5 +1,5 @@
 #include "register_types.h"
-#include "kirby_sim.h"
+#include "godot_sim.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>

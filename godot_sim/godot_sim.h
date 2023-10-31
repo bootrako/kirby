@@ -1,5 +1,5 @@
-#ifndef KIRBY_SIM_H
-#define KIRBY_SIM_H
+#ifndef GODOT_SIM_H
+#define GODOT_SIM_H
 
 #include <godot_cpp/classes/Node.hpp>
 
@@ -21,4 +21,4 @@ private:
 
 }
 
-#endif // KIRBY_SIM_H
+#endif // GODOT_SIM_H
