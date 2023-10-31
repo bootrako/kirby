@@ -1,6 +1,9 @@
 @echo off
 
 if "%~1" == "" (
+    pushd sim
+    zig build
+    popd
     pushd godot_sim
     scons
     popd

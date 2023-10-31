@@ -7,6 +7,10 @@ sources = ["register_types.cpp", "godot_sim.cpp"]
 prefix = "../../godot_project/godot_sim/"
 libname = "libgodotsim"
 
+env.Append(CPPPATH=["../../sim/include"])
+env.Append(LIBPATH=["../../sim/zig-out/lib"])
+env.Append(LIBS=["kirby_sim"])
+
 if env["platform"] == "macos":
     library = env.SharedLibrary(
         (prefix + libname + ".{}.{}.framework/" + libname + ".{}.{}").format(

@@ -1,5 +1,6 @@
 #include "godot_sim.h"
 #include <godot_cpp/core/class_db.hpp>
+#include <kirby_sim.h>
 
 using namespace godot;
 
@@ -14,5 +15,5 @@ void KirbySim::_bind_methods() {
 }
 
 int KirbySim::_get_number() {
-	return 41;
+	return getNumber();
 }
