@@ -2,6 +2,7 @@
 #define GODOT_SIM_H
 
 #include <godot_cpp/classes/Node.hpp>
+#include <kirby_sim.h>
 
 namespace godot {
 
@@ -16,7 +17,13 @@ protected:
 	static void _bind_methods();
 
 private:
-	int _get_number();
+	void _sim_init();
+	void _sim_deinit();
+
+	static void* _godot_alloc(void* context, int size);
+    static void _godot_free(void* context, void* ptr);
+
+	kirby_sim* sim;
 };
 
 }

@@ -6,7 +6,7 @@ pub fn build(b: *std.Build) void {
 
     const lib = b.addStaticLibrary(.{
         .name = "kirby_sim",
-        .root_source_file = .{ .path = "src/main.zig" },
+        .root_source_file = .{ .path = "src/kirby_sim.zig" },
         .target = target,
         .optimize = optimize,
     });
