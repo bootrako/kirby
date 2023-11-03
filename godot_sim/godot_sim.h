@@ -19,9 +19,13 @@ protected:
 private:
 	void _sim_init();
 	void _sim_deinit();
+	int _sim_update(float delta_time);
+	Vector2i _sim_get_player_pos() const;
 
 	static void* _godot_alloc(void* context, int size);
     static void _godot_free(void* context, void* ptr);
+	static void _godot_panic(void* context, const char* msg);
+	static bool _godot_input_action_pressed(void* context, const kirby_sim_input_action input_action);
 
 	kirby_sim* sim;
 };
