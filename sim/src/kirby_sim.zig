@@ -51,5 +51,5 @@ export fn kirby_sim_update(kirby_sim_opaque: ?*KirbySimOpaque, delta_time: f32) 
 
 export fn kirby_sim_get_player_pos(kirby_sim_opaque: ?*const KirbySimOpaque) Pos {
     const kirby_sim = asKirbySim(kirby_sim_opaque);
-    return Pos{ .x = kirby_sim.player_pos[0], .y = kirby_sim.player_pos[1] };
+    return Pos{ .x = kirby_sim.player.pos[0], .y = kirby_sim.player.pos[1] };
 }
