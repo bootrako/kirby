@@ -7,29 +7,29 @@
 namespace godot {
 
 class KirbySim : public Node {
-	GDCLASS(KirbySim, Node)
-	
+    GDCLASS(KirbySim, Node)
+    
 public:
-	KirbySim();
-	~KirbySim();
+    KirbySim();
+    ~KirbySim();
 
 protected:
-	static void _bind_methods();
+    static void _bind_methods();
 
 private:
-	void _sim_init();
-	void _sim_deinit();
-	int _sim_update(float delta_time);
-	Vector2i _sim_get_player_pos() const;
+    void _sim_init();
+    void _sim_deinit();
+    int _sim_update(float delta_time);
+    Vector2i _sim_get_player_pos() const;
 
-	static void* _godot_alloc(void* context, int size);
+    static void* _godot_alloc(void* context, int size);
     static void _godot_free(void* context, void* ptr);
-	static void _godot_panic(void* context, const char* err_msg);
-	static void _godot_log(void* context, const char* msg);
-	static int _godot_input_action_pressed(void* context, const kirby_sim_input_action input_action);
-	static const char* _godot_open_data_file(void* context, kirby_sim_data_file data_file);
+    static void _godot_panic(void* context, const char* err_msg);
+    static void _godot_log(void* context, const char* msg);
+    static int _godot_input_action_pressed(void* context, const kirby_sim_input_action input_action);
+    static const char* _godot_open_data_file(void* context, kirby_sim_data_file data_file);
 
-	kirby_sim* sim;
+    kirby_sim* sim;
 };
 
 }
