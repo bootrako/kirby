@@ -61,17 +61,17 @@ void KirbySim::_godot_log(void* context, const char* msg) {
 
 int KirbySim::_godot_input_action_pressed(void* context, const kirby_sim_input_action input_action) {
     const char* input_action_to_string[] = {
-        "move_left",	// KIRBY_SIM_INPUT_ACTION_MOVE_LEFT
-        "move_right",	// KIRBY_SIM_INPUT_ACTION_MOVE_RIGHT
-        "move_up",		// KIRBY_SIM_INPUT_ACTION_MOVE_UP
-        "move_down",	// KIRBY_SIM_INPUT_ACTION_MOVE_DOWN
+        "move_left",    // KIRBY_SIM_INPUT_ACTION_MOVE_LEFT
+        "move_right",   // KIRBY_SIM_INPUT_ACTION_MOVE_RIGHT
+        "move_up",      // KIRBY_SIM_INPUT_ACTION_MOVE_UP
+        "move_down",    // KIRBY_SIM_INPUT_ACTION_MOVE_DOWN
     };
     return Input::get_singleton()->is_action_pressed(input_action_to_string[input_action]);
 }
 
 const char* KirbySim::_godot_open_data_file(void* context, kirby_sim_data_file data_file) {
     const char* data_file_to_path[] = {
-        "res://data/green_greens.txt" 	// KIRBY_SIM_DATA_FILE_GREEN_GREENS
+        "res://data/green_greens.txt"   // KIRBY_SIM_DATA_FILE_GREEN_GREENS
     };
     return reinterpret_cast<const char*>(FileAccess::get_file_as_bytes(data_file_to_path[data_file]).ptr());
 }
