@@ -1,10 +1,13 @@
 const kirby_sim = @import("kirby_sim.zig");
+const std = @import("std");
 const Input = @import("Input.zig");
 const Level = @import("Level.zig");
 const Player = @import("Player.zig");
 const Self = @This();
 
-pub const time_per_frame = 1.0 / 60.0;
+const time_per_frame = 1.0 / 60.0;
+const max_frames_per_update = 10;
+const max_delta_time = time_per_frame * max_frames_per_update;
 
 host: kirby_sim.Host,
 frame_accumulator: f32,
@@ -42,7 +45,7 @@ pub fn deinit(self: *Self) void {
 pub fn update(self: *Self, delta_time: f32) !i32 {
     var num_frames: i32 = 0;
 
-    self.frame_accumulator += delta_time;
+    self.frame_accumulator += @min(delta_time, max_delta_time);
     while (self.frame_accumulator > time_per_frame) {
         try self.updateFrame();
         num_frames += 1;

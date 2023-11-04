@@ -52,7 +52,7 @@ export fn kirby_sim_deinit(kirby_sim_opaque: ?*KirbySimOpaque) void {
 
 export fn kirby_sim_update(kirby_sim_opaque: ?*KirbySimOpaque, delta_time: f32) c_int {
     const kirby_sim = asKirbySimMut(kirby_sim_opaque);
-    return kirby_sim.update(delta_time) catch |e| handleErr(kirby_sim, e);
+    return @as(c_int, @intCast(kirby_sim.update(delta_time) catch |e| handleErr(kirby_sim, e)));
 }
 
 export fn kirby_sim_get_player_pos(kirby_sim_opaque: ?*const KirbySimOpaque) Pos {
