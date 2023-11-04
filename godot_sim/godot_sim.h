@@ -24,8 +24,10 @@ private:
 
 	static void* _godot_alloc(void* context, int size);
     static void _godot_free(void* context, void* ptr);
-	static void _godot_panic(void* context, const char* msg);
-	static bool _godot_input_action_pressed(void* context, const kirby_sim_input_action input_action);
+	static void _godot_panic(void* context, const char* err_msg);
+	static void _godot_log(void* context, const char* msg);
+	static int _godot_input_action_pressed(void* context, const kirby_sim_input_action input_action);
+	static const char* _godot_open_data_file(void* context, kirby_sim_data_file data_file);
 
 	kirby_sim* sim;
 };

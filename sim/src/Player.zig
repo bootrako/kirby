@@ -9,16 +9,16 @@ pub fn init(self: *Self) void {
 }
 
 pub fn update(self: *Self, input: Input) void {
-    if (input.actionPressed(.move_left)) {
+    if (input.actionPressed(.MoveLeft)) {
         self.pos[0] -= 1;
     }
-    if (input.actionPressed(.move_right)) {
+    if (input.actionPressed(.MoveRight)) {
         self.pos[0] += 1;
     }
-    if (input.actionPressed(.move_up)) {
+    if (input.actionPressed(.MoveUp)) {
         self.pos[1] -= 1;
     }
-    if (input.actionPressed(.move_down)) {
+    if (input.actionPressed(.MoveDown)) {
         self.pos[1] += 1;
     }
 }

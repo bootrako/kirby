@@ -2,17 +2,23 @@ const KirbySim = @import("KirbySim.zig");
 const KirbySimOpaque = opaque {};
 
 pub const InputAction = enum(c_int) {
-    move_left,
-    move_right,
-    move_up,
-    move_down,
+    MoveLeft,
+    MoveRight,
+    MoveUp,
+    MoveDown,
+};
+
+pub const DataFile = enum(c_int) {
+    GreenGreens,
 };
 
 pub const Host = extern struct {
     alloc: ?*const fn (context: ?*anyopaque, size: c_int) callconv(.C) ?*anyopaque,
     free: ?*const fn (context: ?*anyopaque, ptr: ?*anyopaque) callconv(.C) void,
-    panic: ?*const fn (context: ?*anyopaque, msg: [*:0]const u8) callconv(.C) void,
-    input_action_pressed: ?*const fn (context: ?*anyopaque, input_action: InputAction) callconv(.C) bool,
+    panic: ?*const fn (context: ?*anyopaque, err_msg: [*:0]const c_char) callconv(.C) void,
+    log: ?*const fn (context: ?*anyopaque, msg: [*:0]const c_char) callconv(.C) void,
+    input_action_pressed: ?*const fn (context: ?*anyopaque, input_action: InputAction) callconv(.C) c_int,
+    open_data_file: ?*const fn (context: ?*anyopaque, data_file: DataFile) callconv(.C) [*:0]const c_char,
     context: ?*anyopaque,
 };
 

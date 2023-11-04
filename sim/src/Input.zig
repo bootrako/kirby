@@ -22,7 +22,7 @@ pub fn init(self: *Self, host: kirby_sim.Host) void {
 pub fn update(self: *Self) void {
     std.mem.swap([*]bool, &self.cur_input.ptr, &self.prv_input.ptr);
     for (self.cur_input, 0..) |*value, i| {
-        value.* = self.host.input_action_pressed.?(self.host.context, @enumFromInt(i));
+        value.* = self.host.input_action_pressed.?(self.host.context, @enumFromInt(i)) != 0;
     }
 }
 

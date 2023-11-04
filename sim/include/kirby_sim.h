@@ -12,12 +12,18 @@ typedef enum kirby_sim_input_action_t {
     KIRBY_SIM_INPUT_ACTION_MOVE_DOWN,
 } kirby_sim_input_action;
 
+typedef enum kirby_sim_data_file_t {
+    KIRBY_SIM_DATA_FILE_GREEN_GREENS,
+} kirby_sim_data_file;
+
 typedef struct kirby_sim_host_t {
-    void*(*alloc)(void* context, int size);                                             // allocate memory with the given size
-    void(*free)(void* context, void* ptr);                                              // free allocated memory
-    void(*panic)(void* context, const char* msg);                                       // crash with an error message
-    bool(*input_action_pressed)(void* context, kirby_sim_input_action input_action);    // returns true if the input action is currently pressed
-    void* context;                                                                      // context object for storing host data
+    void*(*alloc)(void* context, int size);                                         // allocate memory with the given size
+    void(*free)(void* context, void* ptr);                                          // free allocated memory
+    void(*panic)(void* context, const char* err_msg);                               // crash with an error message
+    void(*log)(void* context, const char* msg);                                     // prints msg to output
+    int(*input_action_pressed)(void* context, kirby_sim_input_action input_action); // returns true if the input action is currently pressed
+    const char*(*open_data_file)(void* context, kirby_sim_data_file data_file);     // opens the specified file and returns the contents
+    void* context;                                                                  // context object for storing host data
 } kirby_sim_host;
 
 typedef struct kirby_sim_pos_t {
