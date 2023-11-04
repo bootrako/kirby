@@ -5,7 +5,7 @@ if "%~1" == "" (
     zig build -Dtarget=native-native-msvc || goto :error
     popd
     pushd godot_sim
-    scons dev_build="yes"
+    scons -Q dev_build="yes"
     popd
 )
 if "%~1" == "release" (
@@ -13,17 +13,17 @@ if "%~1" == "release" (
     zig build -Dtarget=native-native-msvc -Doptimize=ReleaseFast || goto :error
     popd
     pushd godot_sim
-    scons target=template_release
+    scons -Q target=template_release
     popd
 )
 if "%~1" == "editor" (
     pushd godot
-    scons
+    scons -Q
     popd
 )
 if "%~1" == "editor_debug" (
     pushd godot
-    scons dev_build="yes"
+    scons -Q dev_build="yes"
     popd
 )
 goto :EOF
