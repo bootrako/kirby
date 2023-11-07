@@ -1,22 +1,28 @@
 #include <btk_sim.h>
+#include "btk_ctx.h"
 #include "btk_input.h"
+#include "btk_level.h"
 #include "btk_player.h"
 #include "btk_utils.h"
 
-struct btk_sim {
+struct btk_sim_t {
     btk_sim_host host;
     btk_input input;
+    btk_level level;
     btk_player player;
     float frame_accumulator;
 };
 
 btk_sim* btk_sim_init(btk_sim_host host) {
+    btk_ctx_init(host);
+
     btk_sim* sim = host.alloc(host.context, sizeof(btk_sim));
-    sim->host = host;
-    
-    btk_input_init(&sim->input, &sim->host);
-    btk_player_init(&sim->player);
+    btk_input_init(&sim->input);
+    btk_level_init(&sim->level);
+    btk_player_init(&sim->player, &sim->input);
     sim->frame_accumulator = 0.0f;
+
+    btk_level_load(&sim->level, BTK_SIM_DATA_FILE_GREEN_GREENS, &sim->player);
 
     return sim;
 }
@@ -28,7 +34,7 @@ void btk_sim_deinit(btk_sim* sim) {
 
 static void btk_sim_update_frame(btk_sim* sim) {
     btk_input_update(&sim->input);
-    btk_player_update(&sim->player, &sim->input); 
+    btk_player_update(&sim->player); 
 }
 
 void btk_sim_update(btk_sim* sim, float delta_time) {

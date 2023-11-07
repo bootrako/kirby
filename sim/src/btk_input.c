@@ -1,8 +1,8 @@
 #include "btk_input.h"
+#include "btk_ctx.h"
 #include "btk_utils.h"
 
-void btk_input_init(btk_input* input, btk_sim_host* host) {
-    input->host = host;
+void btk_input_init(btk_input* input) {
     for (int i = 0; i < BTK_SIM_ACTION_COUNT * 2; ++i) {
         input->input_buffer[i] = false;
     }
@@ -11,9 +11,10 @@ void btk_input_init(btk_input* input, btk_sim_host* host) {
 }
 
 void btk_input_update(btk_input* input) {
+    const btk_sim_host* host = btk_ctx_host();
     BTK_SWAP(bool*, input->cur_input, input->prv_input);
     for (int i = 0; i < BTK_SIM_ACTION_COUNT; ++i) {
-        input->cur_input[i] = input->host->is_action_active(input->host->context, i);
+        input->cur_input[i] = host->is_action_active(host->context, i);
     }
 }
 

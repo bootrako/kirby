@@ -35,7 +35,7 @@ typedef struct btk_sim_host_t {
     void* context;                                                          // context object for storing host data
 } btk_sim_host;
 
-typedef struct btk_sim btk_sim;
+typedef struct btk_sim_t btk_sim;
 
 // initializes the simulation. internally allocates memory that can only be freed by calling deinit
 btk_sim* btk_sim_init(btk_sim_host host);

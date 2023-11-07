@@ -3,10 +3,12 @@ import os
 import sys
 
 env = SConscript("../godot_cpp/SConstruct")
+env.Append(CCCOMSTR=["compiling $SOURCE ..."])
 env.Append(CXXCOMSTR=["compiling $SOURCE ..."])
 env.Append(SHCXXCOMSTR=["compiling $SOURCE ..."])
 env.Append(LINKCOMSTR=["linking $TARGET ..."])
 env.Append(SHLINKCOMSTR=["linking $TARGET ..."])
+env.Append(CFLAGS=["/WX", "/W4"])
 env.Append(CXXFLAGS=["/D_HAS_EXCEPTIONS=0"])
 env.Append(CPPPATH=[env.Dir(".").abspath + "../../sim/include"])
 sim_objs = SConscript("SConscript", exports="env", src_dir="../sim/src", variant_dir="../godot_sim/build/sim", duplicate=0)
