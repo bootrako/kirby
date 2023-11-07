@@ -13,7 +13,7 @@ void init_godot_sim_module(ModuleInitializationLevel p_level) {
         return;
     }
 
-    ClassDB::register_class<KirbySim>();
+    ClassDB::register_class<GodotSim>();
 }
 
 void deinit_godot_sim_module(ModuleInitializationLevel p_level) {

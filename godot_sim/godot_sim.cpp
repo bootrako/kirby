@@ -6,72 +6,77 @@
 
 using namespace godot;
 
-KirbySim::KirbySim() {
+GodotSim::GodotSim() {
 }
 
-KirbySim::~KirbySim() {
+GodotSim::~GodotSim() {
 }
 
-void KirbySim::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("sim_init"), &KirbySim::_sim_init);
-    ClassDB::bind_method(D_METHOD("sim_deinit"), &KirbySim::_sim_deinit);
-    ClassDB::bind_method(D_METHOD("sim_update"), &KirbySim::_sim_update);
-    ClassDB::bind_method(D_METHOD("sim_get_player_pos"), &KirbySim::_sim_get_player_pos);
+void GodotSim::_bind_methods() {
+    ClassDB::bind_method(D_METHOD("init"), &GodotSim::_sim_init);
+    ClassDB::bind_method(D_METHOD("deinit"), &GodotSim::_sim_deinit);
+    ClassDB::bind_method(D_METHOD("update", "delta_time"), &GodotSim::_sim_update);
+    ClassDB::bind_method(D_METHOD("get_player_pos"), &GodotSim::_sim_get_player_pos);
 }
 
-void KirbySim::_sim_init() {
-    kirby_sim_host host;
-    host.alloc = KirbySim::_godot_alloc;
-    host.free = KirbySim::_godot_free;
-    host.panic = KirbySim::_godot_panic;
-    host.log = KirbySim::_godot_log;
-    host.input_action_pressed = KirbySim::_godot_input_action_pressed;
-    host.open_data_file = KirbySim::_godot_open_data_file;
-    sim = kirby_sim_init(host);
+void GodotSim::_sim_init() {
+    btk_sim_host host;
+    host.alloc = GodotSim::_godot_alloc;
+    host.free = GodotSim::_godot_free;
+    host.panic = GodotSim::_godot_panic;
+    host.log = GodotSim::_godot_log;
+    host.is_action_active = GodotSim::_godot_is_action_active;
+    host.read_data = GodotSim::_godot_read_data;
+    sim = btk_sim_init(host);
 }
 
-void KirbySim::_sim_deinit() {
-    kirby_sim_deinit(sim);
+void GodotSim::_sim_deinit() {
+    btk_sim_deinit(sim);
 }
 
-int KirbySim::_sim_update(float delta_time) {
-    return kirby_sim_update(sim, delta_time);
+void GodotSim::_sim_update(float delta_time) {
+    btk_sim_update(sim, delta_time);
 }
 
-Vector2i KirbySim::_sim_get_player_pos() const {
-    kirby_sim_pos pos = kirby_sim_get_player_pos(sim);
-    return Vector2i(pos.x, pos.y);
+Vector2i GodotSim::_sim_get_player_pos() const {
+    int x, y;
+    btk_sim_get_player_pos(sim, &x, &y);
+    return Vector2i(x, y);
 }
 
-void* KirbySim::_godot_alloc(void* context, int size) {
+void* GodotSim::_godot_alloc(void* context, int size) {
     return memalloc(size);
 }
 
-void KirbySim::_godot_free(void* context, void* ptr) {
+void GodotSim::_godot_free(void* context, void* ptr) {
     memfree(ptr);
 }
 
-void KirbySim::_godot_panic(void* context, const char* err_msg) {
+void GodotSim::_godot_panic(void* context, const char* err_msg) {
     CRASH_NOW_MSG(err_msg);
 }
 
-void KirbySim::_godot_log(void* context, const char* msg) {
+void GodotSim::_godot_log(void* context, const char* msg) {
     UtilityFunctions::print(msg);
 }
 
-int KirbySim::_godot_input_action_pressed(void* context, const kirby_sim_input_action input_action) {
+bool GodotSim::_godot_is_action_active(void* context, btk_sim_action action) {
     const char* input_action_to_string[] = {
-        "move_left",    // KIRBY_SIM_INPUT_ACTION_MOVE_LEFT
-        "move_right",   // KIRBY_SIM_INPUT_ACTION_MOVE_RIGHT
-        "move_up",      // KIRBY_SIM_INPUT_ACTION_MOVE_UP
-        "move_down",    // KIRBY_SIM_INPUT_ACTION_MOVE_DOWN
+        "move_left",    // BTK_SIM_ACTION_MOVE_LEFT
+        "move_right",   // BTK_SIM_ACTION_MOVE_RIGHT
+        "move_up",      // BTK_SIM_ACTION_MOVE_UP
+        "move_down",    // BTK_SIM_ACTION_MOVE_DOWN
     };
-    return Input::get_singleton()->is_action_pressed(input_action_to_string[input_action]);
+    return Input::get_singleton()->is_action_pressed(input_action_to_string[action]);
 }
 
-const char* KirbySim::_godot_open_data_file(void* context, kirby_sim_data_file data_file) {
+btk_sim_data GodotSim::_godot_read_data(void* context, btk_sim_data_file data_file) {
     const char* data_file_to_path[] = {
-        "res://data/green_greens.txt"   // KIRBY_SIM_DATA_FILE_GREEN_GREENS
+        "res://data/green_greens.txt"   // BTK_SIM_DATA_FILE_GREEN_GREENS
     };
-    return reinterpret_cast<const char*>(FileAccess::get_file_as_bytes(data_file_to_path[data_file]).ptr());
+    const PackedByteArray pba = FileAccess::get_file_as_bytes(data_file_to_path[data_file]);
+    btk_sim_data sim_data;
+    sim_data.contents = reinterpret_cast<const char*>(pba.ptr());
+    sim_data.len = static_cast<int>(pba.size());
+    return sim_data;
 }

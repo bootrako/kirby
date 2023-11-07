@@ -1,15 +1,15 @@
 [gd_scene load_steps=4 format=3 uid="uid://dep3tqdr7m3mv"]
 
-[ext_resource type="Script" path="res://scripts/kirby.gd" id="1_ymhdx"]
+[ext_resource type="Script" path="res://scripts/sim.gd" id="1_qqkd2"]
 [ext_resource type="Texture2D" uid="uid://bb6qfspdvga4l" path="res://icon.svg" id="2_icaoa"]
 [ext_resource type="Script" path="res://scripts/player.gd" id="3_wf72g"]
 
 [node name="main" type="Node"]
 
-[node name="kirby" type="KirbySim" parent="."]
-script = ExtResource("1_ymhdx")
+[node name="sim" type="GodotSim" parent="."]
+script = ExtResource("1_qqkd2")
 
-[node name="player" type="Sprite2D" parent="." node_paths=PackedStringArray("kirby")]
+[node name="player" type="Sprite2D" parent="." node_paths=PackedStringArray("sim")]
 texture = ExtResource("2_icaoa")
 script = ExtResource("3_wf72g")
-kirby = NodePath("../kirby")
+sim = NodePath("../sim")

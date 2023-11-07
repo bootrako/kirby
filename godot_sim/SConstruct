@@ -1,2 +1,22 @@
 #!/usr/bin/env python
-SConscript("SConscript", src_dir=".", variant_dir="build", duplicate=0)
+import os
+import sys
+
+env = SConscript("../godot_cpp/SConstruct")
+env.Append(CXXCOMSTR=["compiling $SOURCE ..."])
+env.Append(SHCXXCOMSTR=["compiling $SOURCE ..."])
+env.Append(LINKCOMSTR=["linking $TARGET ..."])
+env.Append(SHLINKCOMSTR=["linking $TARGET ..."])
+env.Append(CXXFLAGS=["/D_HAS_EXCEPTIONS=0"])
+env.Append(CPPPATH=[env.Dir(".").abspath + "../../sim/include"])
+sim_objs = SConscript("SConscript", exports="env", src_dir="../sim/src", variant_dir="../godot_sim/build/sim", duplicate=0)
+godot_sim_objs = SConscript("SConscript", exports="env", src_dir=".", variant_dir="build/godot_sim", duplicate=0)
+
+prefix = "../godot_project/godot_sim/"
+libname = "libgodotsim"
+library = env.SharedLibrary(
+    (prefix + libname + "{}{}").format(env["suffix"], env["SHLIBSUFFIX"]),
+    source=[sim_objs, godot_sim_objs],
+)
+
+Default(library)
