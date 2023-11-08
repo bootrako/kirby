@@ -26,8 +26,8 @@ private:
     static void _godot_free(void* context, void* ptr);
     static void _godot_panic(void* context, const char* err_msg);
     static void _godot_log(void* context, const char* msg);
-    static bool _godot_is_action_active(void* context, btk_sim_action action);
-    static btk_sim_data _godot_read_data(void* context, btk_sim_data_file data_file);
+    static bool _godot_is_action_active(void* context, btk_action action);
+    static const char* _godot_read_data(void* context, btk_data data, int* out_len);
 
     btk_sim* sim;
 };

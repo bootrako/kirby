@@ -8,7 +8,7 @@ void btk_level_init(btk_level* level) {
     level->height = 0;
 }
 
-void btk_level_load(btk_level* level, btk_sim_data_file data_file, btk_player* player) {
-    BTK_REF(data_file);
+void btk_level_load(btk_level* level, btk_data data, btk_player* player) {
+    BTK_REF(data);
     player->level = level;
 }

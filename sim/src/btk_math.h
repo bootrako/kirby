@@ -6,4 +6,4 @@ typedef struct btk_vec2_t {
     int y;
 } btk_vec2;
 
-#endif
+#endif // BTK_MATH_H

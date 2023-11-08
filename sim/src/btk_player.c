@@ -10,16 +10,16 @@ void btk_player_init(btk_player* player, const btk_input* input) {
 }
 
 void btk_player_update(btk_player* player) {
-    if (btk_input_action_active(player->input, BTK_SIM_ACTION_MOVE_LEFT)) {
+    if (btk_input_active(player->input, BTK_ACTION_MOVE_LEFT)) {
         player->pos.x -= 1;
     }
-    if (btk_input_action_active(player->input, BTK_SIM_ACTION_MOVE_RIGHT)) {
+    if (btk_input_active(player->input, BTK_ACTION_MOVE_RIGHT)) {
         player->pos.x += 1;
     }
-    if (btk_input_action_active(player->input, BTK_SIM_ACTION_MOVE_UP)) {
+    if (btk_input_active(player->input, BTK_ACTION_MOVE_UP)) {
         player->pos.y -= 1;
     }
-    if (btk_input_action_active(player->input, BTK_SIM_ACTION_MOVE_DOWN)) {
+    if (btk_input_active(player->input, BTK_ACTION_MOVE_DOWN)) {
         player->pos.y += 1;
     }
 }
