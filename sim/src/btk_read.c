@@ -17,7 +17,7 @@ static bool btk_read_is_whitespace(char c) {
 
 bool btk_read_line(btk_read* read, const char** out_line, int* out_line_len) {
     while (read->pos < read->size && btk_read_is_whitespace(read->str[read->pos])) {
-        read->pos += 1;
+        read->pos++;
     }
 
     if (read->pos >= read->size) {
@@ -30,13 +30,13 @@ bool btk_read_line(btk_read* read, const char** out_line, int* out_line_len) {
 
     const int start_pos = read->pos;
     int end_pos = read->pos;
-    read->pos += 1;
+    read->pos++;
 
     while (read->pos < read->size && !btk_read_is_newline(read->str[read->pos])) {
         if (!btk_read_is_whitespace(read->str[read->pos])) {
             end_pos = read->pos;
         }
-        read->pos += 1;
+        read->pos++;
     }
 
     if (out_line_len) {
@@ -53,18 +53,30 @@ bool btk_read_int(btk_read* read, int* out_val) {
         return false;
     }
 
-    int result = 0;
-    int factor = 1;
-    for (int i = line_len - 1; i >= 0; --i) {
+    bool is_neg = false;
+    if (line[0] == '-' && line_len > 1) {
+        is_neg = true;
+        line++;
+        line_len--;
+    }
+
+    int res = 0;
+    for (int i = 0; i < line_len; ++i) {
         if (line[i] < '0' || line[i] > '9') {
             return false;
         }
-        result += (int)(line[i] - '0') * factor;
-        factor *= 10;
+
+        int prv_res = res;
+        res = (res * 10) + (int)(line[i] - '0');
+
+        // check for overflow
+        if (res < prv_res) {
+            return false;
+        }
     }
 
     if (out_val) {
-        *out_val = result;
+        *out_val = is_neg ? -res : res;
     }
 
     return true;
