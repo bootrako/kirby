@@ -31,6 +31,8 @@ btk_sim* btk_sim_init(const btk_host* host) {
 }
 
 void btk_sim_deinit(btk_sim* sim) {
+    btk_level_deinit(&sim->level);
+
     const btk_host* host = btk_ctx_host();
     host->free(host->ctx, sim);
 }
