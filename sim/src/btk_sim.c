@@ -4,6 +4,7 @@
 #include "btk_level.h"
 #include "btk_player.h"
 #include "btk_utils.h"
+#include <stddef.h>
 
 struct btk_sim_t {
     btk_input input;
@@ -16,6 +17,9 @@ btk_sim* btk_sim_init(const btk_host* host) {
     btk_ctx_init(host);
 
     btk_sim* sim = host->alloc(host->ctx, sizeof(btk_sim));
+    if (sim == NULL) {
+        host->panic(host->ctx, "failed to alloc sim!");
+    }
     btk_input_init(&sim->input);
     btk_level_init(&sim->level);
     btk_player_init(&sim->player, &sim->input);
