@@ -3,6 +3,7 @@
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
+#include <stdlib.h>
 
 using namespace godot;
 
@@ -45,11 +46,11 @@ Vector2i GodotSim::_sim_get_player_pos() const {
 }
 
 void* GodotSim::_godot_alloc(void* context, int size) {
-    return memalloc(size);
+    return ::malloc(size);
 }
 
 void GodotSim::_godot_free(void* context, void* ptr) {
-    memfree(ptr);
+    ::free(ptr);
 }
 
 void GodotSim::_godot_panic(void* context, const char* err_msg) {
