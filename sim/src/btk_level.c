@@ -35,12 +35,9 @@ void btk_level_load(btk_level* level, btk_data data, btk_player* player) {
 
     btk_read read;
     btk_read_init(&read, level_data_str, level_data_len);
-    if (!btk_read_int(&read, &level->width)) {
-        host->panic(host->ctx, "failed to read level width!");
-    }
-    if (!btk_read_int(&read, &level->height)) {
-        host->panic(host->ctx, "failed to read level height!");
-    }
+
+    btk_read_int(&read, &level->width);
+    btk_read_int(&read, &level->height);
 
     level->collision = host->alloc(host->ctx, sizeof(bool) * level->width * level->height);
     if (level->collision == NULL) {
@@ -50,9 +47,7 @@ void btk_level_load(btk_level* level, btk_data data, btk_player* player) {
     for (int y = 0; y < level->height; ++y) {
         const char* line;
         int line_len;
-        if (!btk_read_line(&read, &line, &line_len)) {
-            host->panic(host->ctx, "failed to read level collision data!");
-        }
+        btk_read_line(&read, &line, &line_len);
 
         if (line_len != level->width) {
             host->panic(host->ctx, "level collision data width does not match level width!");
@@ -67,14 +62,9 @@ void btk_level_load(btk_level* level, btk_data data, btk_player* player) {
     }
 
     int player_start_x = 0;
-    if (!btk_read_int(&read, &player_start_x)) {
-        host->panic(host->ctx, "failed to read player start x!");
-    }
-
     int player_start_y = 0;
-    if (!btk_read_int(&read, &player_start_y)) {
-        host->panic(host->ctx, "failed to read player start y!");
-    }
+    btk_read_int(&read, &player_start_x);
+    btk_read_int(&read, &player_start_y);
 
     player->level = level;
     player->pos.x = player_start_x * tile_width;
