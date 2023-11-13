@@ -1,5 +1,6 @@
 #include "godot_sim.h"
 #include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
@@ -7,7 +8,11 @@
 
 using namespace godot;
 
-GodotSim::GodotSim() {
+GodotSim::GodotSim() : sim(nullptr) {
+    if (Engine::get_singleton()->is_editor_hint()) {
+        return;
+    }
+
     btk_host host;
     host.alloc = GodotSim::_godot_alloc;
     host.free = GodotSim::_godot_free;
@@ -19,16 +24,23 @@ GodotSim::GodotSim() {
 }
 
 GodotSim::~GodotSim() {
-    btk_sim_deinit(sim);
+    if (sim != nullptr) {
+        btk_sim_deinit(sim);
+    }
+}
+
+void GodotSim::_process(double delta_time) {
+    if (Engine::get_singleton()->is_editor_hint()) {
+        return;
+    }
+
+    if (sim != nullptr) {
+        btk_sim_update(sim, delta_time);        
+    }
 }
 
 void GodotSim::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("update", "delta_time"), &GodotSim::_sim_update);
     ClassDB::bind_method(D_METHOD("get_player_pos"), &GodotSim::_sim_get_player_pos);
-}
-
-void GodotSim::_sim_update(float delta_time) {
-    btk_sim_update(sim, delta_time);
 }
 
 Vector2i GodotSim::_sim_get_player_pos() const {
