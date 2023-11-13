@@ -5,8 +5,8 @@
 #include "btk_utils.h"
 #include <stddef.h>
 
-const static int tile_width = 16;
-const static int tile_height = 16;
+static const int btk_level_tile_width = 16;
+static const int btk_level_tile_height = 16;
 
 void btk_level_init(btk_level* level) {
     level->width = 0;
@@ -36,8 +36,8 @@ void btk_level_load(btk_level* level, btk_data data, btk_player* player) {
     btk_read read;
     btk_read_init(&read, level_data_str, level_data_len);
 
-    btk_read_int(&read, &level->width);
-    btk_read_int(&read, &level->height);
+    level->width = btk_read_int(&read);
+    level->height = btk_read_int(&read);
 
     level->collision = host->alloc(host->ctx, sizeof(bool) * level->width * level->height);
     if (level->collision == NULL) {
@@ -45,9 +45,8 @@ void btk_level_load(btk_level* level, btk_data data, btk_player* player) {
     }
 
     for (int y = 0; y < level->height; ++y) {
-        const char* line;
-        int line_len;
-        btk_read_line(&read, &line, &line_len);
+        int line_len = 0;
+        const char* line = btk_read_line(&read, &line_len);
 
         if (line_len != level->width) {
             host->panic(host->ctx, "level collision data width does not match level width!");
@@ -61,12 +60,72 @@ void btk_level_load(btk_level* level, btk_data data, btk_player* player) {
         }
     }
 
-    int player_start_x = 0;
-    int player_start_y = 0;
-    btk_read_int(&read, &player_start_x);
-    btk_read_int(&read, &player_start_y);
+    int player_start_x = btk_read_int(&read);
+    int player_start_y = btk_read_int(&read);
 
     player->level = level;
-    player->pos.x = player_start_x * tile_width;
-    player->pos.y = player_start_y * tile_height;
+    player->xform.x = player_start_x * btk_level_tile_width;
+    player->xform.y = player_start_y * btk_level_tile_height;
+}
+
+static int btk_level_move_x(const btk_level* level, btk_rect xform, int desired_x) {
+    bool moving_r = desired_x > xform.x;
+    int dir_x = moving_r ? 1 : -1;
+    int edge_offset_x = moving_r ? xform.w - 1 : 0;
+    int cell_offset_x = moving_r ? -xform.w : btk_level_tile_width;
+
+    int start_cell_x = (xform.x + edge_offset_x) / btk_level_tile_width;
+    int end_cell_x = ((desired_x + edge_offset_x) / btk_level_tile_width) + dir_x;
+    int start_cell_y = xform.y / btk_level_tile_height;
+    int end_cell_y = (xform.y + xform.h - 1) / btk_level_tile_height;
+
+    int cell_x = start_cell_x;
+    while (cell_x != end_cell_x) {
+        for (int cell_y = start_cell_y; cell_y <= end_cell_y; ++cell_y) {
+            if (level->collision[level->width * cell_y + cell_x]) {
+                return cell_x * btk_level_tile_width + cell_offset_x;
+            }
+        }
+        cell_x += dir_x;
+    }
+
+    return desired_x;
+}
+
+static int btk_level_move_y(const btk_level* level, btk_rect xform, int desired_y) {
+    bool moving_d = desired_y > xform.y;
+    int dir_y = moving_d ? 1 : -1;
+    int edge_offset_y = moving_d ? xform.h - 1 : 0;
+    int cell_offset_y = moving_d ? -xform.h : btk_level_tile_height;
+
+    int start_cell_y = (xform.y + edge_offset_y) / btk_level_tile_height;
+    int end_cell_y = ((desired_y + edge_offset_y) / btk_level_tile_height) + dir_y;
+    int start_cell_x = xform.x / btk_level_tile_width;
+    int end_cell_x = (xform.x + xform.w - 1) / btk_level_tile_width;
+
+    int cell_y = start_cell_y;
+    while (cell_y != end_cell_y) {
+        for (int cell_x = start_cell_x; cell_x <= end_cell_x; ++cell_x) {
+            if (level->collision[level->width * cell_y + cell_x]) {
+                return cell_y * btk_level_tile_height + cell_offset_y;
+            }
+        }
+        cell_y += dir_y;
+    }
+
+    return desired_y;
+}
+
+btk_vec2 btk_level_move(const btk_level* level, btk_rect xform, btk_vec2 desired) {
+    btk_vec2 actual = desired;
+
+    if (desired.x != xform.x) {
+        actual.x = btk_level_move_x(level, xform, desired.x);
+    }
+
+    if (desired.y != xform.y) {
+        actual.y = btk_level_move_y(level, xform, desired.y);
+    }
+
+    return actual;
 }

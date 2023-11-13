@@ -9,7 +9,7 @@ typedef struct btk_level_t btk_level;
 typedef struct btk_player_t {
     const btk_input* input;
     const btk_level* level;
-    btk_vec2 pos;
+    btk_rect xform;
 } btk_player;
 
 void btk_player_init(btk_player* player, const btk_input* input);

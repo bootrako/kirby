@@ -16,7 +16,7 @@ static bool btk_read_is_whitespace(char c) {
     return btk_read_is_newline(c) || c == ' ' || c == '\t';
 }
 
-void btk_read_line(btk_read* read, const char** out_line, int* out_line_len) {
+const char* btk_read_line(btk_read* read, int* out_line_len) {
     const btk_host* host = btk_ctx_host();
 
     while (read->pos < read->size && btk_read_is_whitespace(read->str[read->pos])) {
@@ -27,9 +27,7 @@ void btk_read_line(btk_read* read, const char** out_line, int* out_line_len) {
         host->panic(host->ctx, "read_line reached EOF!");
     }
 
-    if (out_line) {
-        *out_line = read->str + read->pos;
-    }
+    const char* line = read->str + read->pos; 
 
     const int start_pos = read->pos;
     int end_pos = read->pos;
@@ -45,14 +43,14 @@ void btk_read_line(btk_read* read, const char** out_line, int* out_line_len) {
     if (out_line_len) {
         *out_line_len = end_pos - start_pos + 1;
     }
+    return line;
 }
 
-void btk_read_int(btk_read* read, int* out_val) {
+int btk_read_int(btk_read* read) {
     const btk_host* host = btk_ctx_host();
 
-    const char* line = NULL;
     int line_len = 0;
-    btk_read_line(read, &line, &line_len);
+    const char* line = btk_read_line(read, &line_len);
 
     bool is_neg = false;
     if (line[0] == '-' && line_len > 1) {
@@ -76,7 +74,5 @@ void btk_read_int(btk_read* read, int* out_val) {
         }
     }
 
-    if (out_val) {
-        *out_val = is_neg ? -res : res;
-    }
+    return is_neg ? -res : res;
 }

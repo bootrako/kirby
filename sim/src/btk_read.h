@@ -8,7 +8,7 @@ typedef struct btk_read_t {
 } btk_read;
 
 void btk_read_init(btk_read* read, const char* str, int size);
-void btk_read_line(btk_read* read, const char** out_line, int* out_line_len);
-void btk_read_int(btk_read* read, int* out_val);
+const char* btk_read_line(btk_read* read, int* out_line_len);
+int btk_read_int(btk_read* read);
 
 #endif // BTK_READ_H

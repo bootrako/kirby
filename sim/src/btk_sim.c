@@ -56,10 +56,10 @@ void btk_sim_update(btk_sim* sim, float delta_time) {
 
 void btk_sim_get_player_pos(const btk_sim* sim, int* out_x, int* out_y) {
     if (out_x) {
-        *out_x = sim->player.pos.x;
+        *out_x = sim->player.xform.x;
     }
 
     if (out_y) {
-        *out_y = sim->player.pos.y;
+        *out_y = sim->player.xform.y;
     }
 }
