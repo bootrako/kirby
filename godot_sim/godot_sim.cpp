@@ -8,19 +8,6 @@
 using namespace godot;
 
 GodotSim::GodotSim() {
-}
-
-GodotSim::~GodotSim() {
-}
-
-void GodotSim::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("init"), &GodotSim::_sim_init);
-    ClassDB::bind_method(D_METHOD("deinit"), &GodotSim::_sim_deinit);
-    ClassDB::bind_method(D_METHOD("update", "delta_time"), &GodotSim::_sim_update);
-    ClassDB::bind_method(D_METHOD("get_player_pos"), &GodotSim::_sim_get_player_pos);
-}
-
-void GodotSim::_sim_init() {
     btk_host host;
     host.alloc = GodotSim::_godot_alloc;
     host.free = GodotSim::_godot_free;
@@ -31,8 +18,13 @@ void GodotSim::_sim_init() {
     sim = btk_sim_init(&host);
 }
 
-void GodotSim::_sim_deinit() {
+GodotSim::~GodotSim() {
     btk_sim_deinit(sim);
+}
+
+void GodotSim::_bind_methods() {
+    ClassDB::bind_method(D_METHOD("update", "delta_time"), &GodotSim::_sim_update);
+    ClassDB::bind_method(D_METHOD("get_player_pos"), &GodotSim::_sim_get_player_pos);
 }
 
 void GodotSim::_sim_update(float delta_time) {
@@ -46,11 +38,11 @@ Vector2i GodotSim::_sim_get_player_pos() const {
 }
 
 void* GodotSim::_godot_alloc(void* context, int size) {
-    return ::malloc(size);
+    return memalloc(size);
 }
 
 void GodotSim::_godot_free(void* context, void* ptr) {
-    ::free(ptr);
+    memfree(ptr);
 }
 
 void GodotSim::_godot_panic(void* context, const char* err_msg) {

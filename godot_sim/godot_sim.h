@@ -17,8 +17,6 @@ protected:
     static void _bind_methods();
 
 private:
-    void _sim_init();
-    void _sim_deinit();
     void _sim_update(float delta_time);
     Vector2i _sim_get_player_pos() const;
 
@@ -29,7 +27,7 @@ private:
     static bool _godot_is_action_active(void* context, btk_action action);
     static const char* _godot_read_data(void* context, btk_data data, int* out_len);
 
-    btk_sim* sim;
+    btk_sim* sim = nullptr;
 };
 
 }
