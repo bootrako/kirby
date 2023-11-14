@@ -1,6 +1,8 @@
 #ifndef BTK_ACTION_H
 #define BTK_ACTION_H
 
+#include "btk_base.h"
+
 typedef enum btk_action_t {
     BTK_ACTION_MOVE_LEFT,
     BTK_ACTION_MOVE_RIGHT,

@@ -1,6 +1,8 @@
 #ifndef BTK_MATH_H
 #define BTK_MATH_H
 
+#include <btk_base.h>
+
 typedef struct btk_vec2_t {
     int x;
     int y;

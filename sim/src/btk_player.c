@@ -1,7 +1,6 @@
 #include "btk_player.h"
 #include "btk_input.h"
 #include "btk_level.h"
-#include <stddef.h>
 
 static const int btk_player_base_w = 16;
 static const int btk_player_base_h = 16;

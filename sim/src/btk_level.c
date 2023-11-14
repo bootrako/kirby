@@ -2,8 +2,6 @@
 #include "btk_ctx.h"
 #include "btk_read.h"
 #include "btk_player.h"
-#include "btk_utils.h"
-#include <stddef.h>
 
 static const int btk_level_tile_width = 16;
 static const int btk_level_tile_height = 16;
@@ -54,7 +52,7 @@ void btk_level_load(btk_level* level, btk_data data, btk_player* player) {
 
         for (int x = 0; x < level->width; ++x) {
             if (line[x] != '0' && line[x] != '1') {
-                host->panic(host->ctx, "level collision data must be 0 or 1");
+                host->panic(host->ctx, "level collision data must be 0 or 1!");
             }
             level->collision[y * level->height + x] = line[x] == '1';
         }
@@ -79,14 +77,12 @@ static int btk_level_move_x(const btk_level* level, btk_rect xform, int desired_
     int start_cell_y = xform.y / btk_level_tile_height;
     int end_cell_y = (xform.y + xform.h - 1) / btk_level_tile_height;
 
-    int cell_x = start_cell_x;
-    while (cell_x != end_cell_x) {
+    for (int cell_x = start_cell_x; cell_x != end_cell_x; cell_x += dir_x) {
         for (int cell_y = start_cell_y; cell_y <= end_cell_y; ++cell_y) {
             if (level->collision[level->width * cell_y + cell_x]) {
                 return cell_x * btk_level_tile_width + cell_offset_x;
             }
         }
-        cell_x += dir_x;
     }
 
     return desired_x;
@@ -103,14 +99,12 @@ static int btk_level_move_y(const btk_level* level, btk_rect xform, int desired_
     int start_cell_x = xform.x / btk_level_tile_width;
     int end_cell_x = (xform.x + xform.w - 1) / btk_level_tile_width;
 
-    int cell_y = start_cell_y;
-    while (cell_y != end_cell_y) {
+    for (int cell_y = start_cell_y; cell_y != end_cell_y; cell_y += dir_y) {
         for (int cell_x = start_cell_x; cell_x <= end_cell_x; ++cell_x) {
             if (level->collision[level->width * cell_y + cell_x]) {
                 return cell_y * btk_level_tile_height + cell_offset_y;
             }
         }
-        cell_y += dir_y;
     }
 
     return desired_y;

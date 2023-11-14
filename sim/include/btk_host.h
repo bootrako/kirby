@@ -3,7 +3,6 @@
 
 #include "btk_action.h"
 #include "btk_data.h"
-#include <stdbool.h>
 
 typedef struct btk_host_t {
     void*(*alloc)(void* ctx, int size);                                 // allocate memory with the given size

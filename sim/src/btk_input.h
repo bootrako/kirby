@@ -2,7 +2,6 @@
 #define BTK_INPUT_H
 
 #include <btk_action.h>
-#include <stdbool.h>
 
 typedef struct btk_input_t {
     bool buffer[BTK_ACTION_COUNT * 2];

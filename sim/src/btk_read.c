@@ -1,6 +1,5 @@
 #include "btk_read.h"
 #include "btk_ctx.h"
-#include <stddef.h>
 
 void btk_read_init(btk_read* read, const char* str, int size) {
     read->str = str;
@@ -29,7 +28,7 @@ const char* btk_read_line(btk_read* read, int* out_line_len) {
 
     const char* line = read->str + read->pos; 
 
-    const int start_pos = read->pos;
+    int start_pos = read->pos;
     int end_pos = read->pos;
     read->pos++;
 

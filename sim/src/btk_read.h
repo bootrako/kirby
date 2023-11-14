@@ -1,6 +1,8 @@
 #ifndef BTK_READ_H
 #define BTK_READ_H
 
+#include <btk_base.h>
+
 typedef struct btk_read_t {
     const char* str;
     int size;

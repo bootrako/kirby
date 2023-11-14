@@ -3,7 +3,6 @@
 
 #include <btk_data.h>
 #include "btk_math.h"
-#include <stdbool.h>
 
 typedef struct btk_player_t btk_player;
 

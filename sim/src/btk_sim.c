@@ -4,7 +4,6 @@
 #include "btk_level.h"
 #include "btk_player.h"
 #include "btk_utils.h"
-#include <stddef.h>
 
 struct btk_sim_t {
     btk_input input;
