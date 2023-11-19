@@ -20,8 +20,3 @@ if "%~1" == "editor_debug" (
     scons -Q dev_build="yes"
     popd
 )
-goto :EOF
-
-:error
-popd
-exit /b
