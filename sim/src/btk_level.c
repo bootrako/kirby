@@ -66,7 +66,7 @@ void btk_level_load(btk_level* level, btk_data data, btk_player* player) {
     player->xform.y = player_start_y * btk_level_tile_height;
 }
 
-static int btk_level_move_x(const btk_level* level, btk_rect xform, int desired_x) {
+static int btk_level_collide_x(const btk_level* level, btk_rect xform, int desired_x) {
     bool moving_r = desired_x > xform.x;
     int dir_x = moving_r ? 1 : -1;
     int edge_offset_x = moving_r ? xform.w - 1 : 0;
@@ -88,7 +88,7 @@ static int btk_level_move_x(const btk_level* level, btk_rect xform, int desired_
     return desired_x;
 }
 
-static int btk_level_move_y(const btk_level* level, btk_rect xform, int desired_y) {
+static int btk_level_collide_y(const btk_level* level, btk_rect xform, int desired_y) {
     bool moving_d = desired_y > xform.y;
     int dir_y = moving_d ? 1 : -1;
     int edge_offset_y = moving_d ? xform.h - 1 : 0;
@@ -110,15 +110,15 @@ static int btk_level_move_y(const btk_level* level, btk_rect xform, int desired_
     return desired_y;
 }
 
-btk_vec2 btk_level_move(const btk_level* level, btk_rect xform, btk_vec2 desired) {
+btk_vec2 btk_level_collide(const btk_level* level, btk_rect xform, btk_vec2 desired) {
     btk_vec2 actual = desired;
 
     if (desired.x != xform.x) {
-        actual.x = btk_level_move_x(level, xform, desired.x);
+        actual.x = btk_level_collide_x(level, xform, desired.x);
     }
 
     if (desired.y != xform.y) {
-        actual.y = btk_level_move_y(level, xform, desired.y);
+        actual.y = btk_level_collide_y(level, xform, desired.y);
     }
 
     return actual;

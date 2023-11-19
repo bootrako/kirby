@@ -26,7 +26,7 @@ void btk_player_update(btk_player* player) {
         desired.y += 1;
     }
 
-    btk_vec2 actual = btk_level_move(player->level, player->xform, desired);
+    btk_vec2 actual = btk_level_collide(player->level, player->xform, desired);
     player->xform.x = actual.x;
     player->xform.y = actual.y;
 }
