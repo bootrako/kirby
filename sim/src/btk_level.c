@@ -1,6 +1,7 @@
 #include "btk_level.h"
 #include "btk_read.h"
 #include "btk_player.h"
+#include "btk_utils.h"
 
 #define BTK_LEVEL_TILE_WIDTH 16
 #define BTK_LEVEL_TILE_HEIGHT 16
@@ -50,7 +51,7 @@ void btk_level_load(btk_ctx* ctx, btk_level* level, btk_data data, btk_player* p
             if (line[x] != '0' && line[x] != '1') {
                 btk_ctx_panic(ctx, "level collision data must be 0 or 1!");
             }
-            level->collision[y * level->height + x] = line[x] == '1';
+            level->collision[y * level->width + x] = line[x] == '1';
         }
     }
 
@@ -73,6 +74,11 @@ static int btk_level_collide_x(btk_ctx* ctx, btk_level* level, btk_rect xform, i
     int start_cell_y = xform.y / BTK_LEVEL_TILE_HEIGHT;
     int end_cell_y = (xform.y + xform.h - 1) / BTK_LEVEL_TILE_HEIGHT;
 
+    start_cell_x = BTK_CLAMP(start_cell_x, 0, level->width - 1);
+    end_cell_x = BTK_CLAMP(end_cell_x, -1, level->width);
+    start_cell_y = BTK_CLAMP(start_cell_y, 0, level->height - 1);
+    end_cell_y = BTK_CLAMP(end_cell_y, 0, level->height - 1);
+
     for (int cell_x = start_cell_x; cell_x != end_cell_x; cell_x += dir_x) {
         for (int cell_y = start_cell_y; cell_y <= end_cell_y; ++cell_y) {
             if (level->collision[level->width * cell_y + cell_x]) {
@@ -81,7 +87,7 @@ static int btk_level_collide_x(btk_ctx* ctx, btk_level* level, btk_rect xform, i
         }
     }
 
-    return desired_x;
+    return BTK_CLAMP(desired_x, 0, (level->width - 1) * BTK_LEVEL_TILE_WIDTH);
 }
 
 static int btk_level_collide_y(btk_ctx* ctx, btk_level* level, btk_rect xform, int desired_y) {
@@ -95,6 +101,11 @@ static int btk_level_collide_y(btk_ctx* ctx, btk_level* level, btk_rect xform, i
     int start_cell_x = xform.x / BTK_LEVEL_TILE_WIDTH;
     int end_cell_x = (xform.x + xform.w - 1) / BTK_LEVEL_TILE_WIDTH;
 
+    start_cell_y = BTK_CLAMP(start_cell_y, 0, level->height - 1);
+    end_cell_y = BTK_CLAMP(end_cell_y, -1, level->height);
+    start_cell_x = BTK_CLAMP(start_cell_x, 0, level->width - 1);
+    end_cell_x = BTK_CLAMP(end_cell_x, 0, level->width - 1);
+
     for (int cell_y = start_cell_y; cell_y != end_cell_y; cell_y += dir_y) {
         for (int cell_x = start_cell_x; cell_x <= end_cell_x; ++cell_x) {
             if (level->collision[level->width * cell_y + cell_x]) {
@@ -103,7 +114,7 @@ static int btk_level_collide_y(btk_ctx* ctx, btk_level* level, btk_rect xform, i
         }
     }
 
-    return desired_y;
+    return BTK_CLAMP(desired_y, 0, (level->height - 1) * BTK_LEVEL_TILE_HEIGHT);
 }
 
 btk_vec2 btk_level_collide(btk_ctx* ctx, btk_level* level, btk_rect xform, btk_vec2 desired) {
