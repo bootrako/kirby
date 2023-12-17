@@ -23,10 +23,10 @@ private:
 
     static void* _godot_alloc(void* context, int size);
     static void _godot_free(void* context, void* ptr);
-    static void _godot_panic(void* context, const char* err_msg);
-    static void _godot_log(void* context, const char* msg);
+    static void _godot_panic(void* context, char* err_msg);
+    static void _godot_log(void* context, char* msg);
     static bool _godot_is_action_active(void* context, btk_action action);
-    static const char* _godot_read_data(void* context, btk_data data, int* out_len);
+    static char* _godot_read_data(void* context, btk_data data, int* out_len);
 
     btk_sim* sim;
 };

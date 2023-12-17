@@ -5,12 +5,35 @@
 extern "C" {
 #endif // __cplusplus
 
-#include "btk_host.h"
+#include <stdbool.h>
+
+typedef enum btk_action_t {
+    BTK_ACTION_MOVE_LEFT,
+    BTK_ACTION_MOVE_RIGHT,
+    BTK_ACTION_MOVE_UP,
+    BTK_ACTION_MOVE_DOWN,
+    BTK_ACTION_COUNT,
+} btk_action;
+
+typedef enum btk_data_t {
+    BTK_DATA_GREEN_GREENS,
+    BTK_DATA_COUNT,
+} btk_data;
+
+typedef struct btk_host_t {
+    void*(*alloc)(void* ctx, int size);                                 // allocate memory with the given size
+    void(*free)(void* ctx, void* ptr);                                  // free allocated memory
+    void(*panic)(void* ctx, char* err_msg);                             // crash with an error message
+    void(*log)(void* ctx, char* msg);                                   // prints message to output
+    bool(*is_action_active)(void* ctx, btk_action action);              // returns true if the action is currently being activated
+    char*(*read_data)(void* ctx, btk_data data, int* out_len);          // opens the specified data file and returns the contents
+    void* ctx;                                                          // context object for storing host data
+} btk_host;
 
 typedef struct btk_sim_t btk_sim;
 
 // initializes the simulation. internally allocates memory that can only be freed by calling deinit
-btk_sim* btk_sim_init(const btk_host* host);
+btk_sim* btk_sim_init(btk_host host);
 
 // deinitialize the simulation. must be called on a sim pointer that was created with init
 void btk_sim_deinit(btk_sim* sim);
@@ -19,7 +42,7 @@ void btk_sim_deinit(btk_sim* sim);
 void btk_sim_update(btk_sim* sim, float delta_time);
 
 // gets the player's current position, in world space.
-void btk_sim_get_player_pos(const btk_sim* sim, int* out_x, int* out_y);
+void btk_sim_get_player_pos(btk_sim* sim, int* out_x, int* out_y);
 
 #ifdef __cplusplus
 }

@@ -19,7 +19,7 @@ GodotSim::GodotSim() : sim(nullptr) {
     host.log = GodotSim::_godot_log;
     host.is_action_active = GodotSim::_godot_is_action_active;
     host.read_data = GodotSim::_godot_read_data;
-    sim = btk_sim_init(&host);
+    sim = btk_sim_init(host);
 }
 
 GodotSim::~GodotSim() {
@@ -56,11 +56,11 @@ void GodotSim::_godot_free(void* context, void* ptr) {
     memfree(ptr);
 }
 
-void GodotSim::_godot_panic(void* context, const char* err_msg) {
+void GodotSim::_godot_panic(void* context, char* err_msg) {
     CRASH_NOW_MSG(err_msg);
 }
 
-void GodotSim::_godot_log(void* context, const char* msg) {
+void GodotSim::_godot_log(void* context, char* msg) {
     UtilityFunctions::print(msg);
 }
 
@@ -74,7 +74,7 @@ bool GodotSim::_godot_is_action_active(void* context, btk_action action) {
     return Input::get_singleton()->is_action_pressed(input_action_to_string[action]);
 }
 
-const char* GodotSim::_godot_read_data(void* context, btk_data data, int* out_len) {
+char* GodotSim::_godot_read_data(void* context, btk_data data, int* out_len) {
     const char* data_to_path[] = {
         "res://data/green_greens.txt"   // BTK_DATA_GREEN_GREENS
     };
@@ -82,5 +82,5 @@ const char* GodotSim::_godot_read_data(void* context, btk_data data, int* out_le
     if (out_len) {
         *out_len = static_cast<int>(pba.size());
     }
-    return reinterpret_cast<const char*>(pba.ptr());
+    return reinterpret_cast<char*>(const_cast<uint8_t*>(pba.ptr()));
 }

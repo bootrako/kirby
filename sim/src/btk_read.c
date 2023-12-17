@@ -1,7 +1,6 @@
 #include "btk_read.h"
-#include "btk_ctx.h"
 
-void btk_read_init(btk_read* read, const char* str, int size) {
+void btk_read_init(btk_ctx* ctx, btk_read* read, char* str, int size) {
     read->str = str;
     read->size = size;
     read->pos = 0;
@@ -15,18 +14,16 @@ static bool btk_read_is_whitespace(char c) {
     return btk_read_is_newline(c) || c == ' ' || c == '\t';
 }
 
-const char* btk_read_line(btk_read* read, int* out_line_len) {
-    const btk_host* host = btk_ctx_host();
-
+char* btk_read_line(btk_ctx* ctx, btk_read* read, int* out_line_len) {
     while (read->pos < read->size && btk_read_is_whitespace(read->str[read->pos])) {
         read->pos++;
     }
 
     if (read->pos >= read->size) {
-        host->panic(host->ctx, "read_line reached EOF!");
+        btk_ctx_panic(ctx, "read_line reached EOF!");
     }
 
-    const char* line = read->str + read->pos; 
+    char* line = read->str + read->pos; 
 
     int start_pos = read->pos;
     int end_pos = read->pos;
@@ -45,11 +42,9 @@ const char* btk_read_line(btk_read* read, int* out_line_len) {
     return line;
 }
 
-int btk_read_int(btk_read* read) {
-    const btk_host* host = btk_ctx_host();
-
+int btk_read_int(btk_ctx* ctx, btk_read* read) {
     int line_len = 0;
-    const char* line = btk_read_line(read, &line_len);
+    char* line = btk_read_line(ctx, read, &line_len);
 
     bool is_neg = false;
     if (line[0] == '-' && line_len > 1) {
@@ -61,7 +56,7 @@ int btk_read_int(btk_read* read) {
     int res = 0;
     for (int i = 0; i < line_len; ++i) {
         if (line[i] < '0' || line[i] > '9') {
-            host->panic(host->ctx, "read_int invalid character!");
+            btk_ctx_panic(ctx, "read_int invalid character!");
         }
 
         int prv_res = res;
@@ -69,7 +64,7 @@ int btk_read_int(btk_read* read) {
 
         // check for overflow
         if (res < prv_res) {
-            host->panic(host->ctx, "read_int overflow!");
+            btk_ctx_panic(ctx, "read_int overflow!");
         }
     }
 

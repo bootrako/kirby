@@ -7,12 +7,12 @@ typedef struct btk_input_t btk_input;
 typedef struct btk_level_t btk_level;
 
 typedef struct btk_player_t {
-    const btk_input* input;
-    const btk_level* level;
+    btk_input* input;
+    btk_level* level;
     btk_rect xform;
 } btk_player;
 
-void btk_player_init(btk_player* player, const btk_input* input);
-void btk_player_update(btk_player* player);
+void btk_player_init(btk_ctx* ctx, btk_player* player, btk_input* input);
+void btk_player_update(btk_ctx* ctx, btk_player* player);
 
 #endif // BTK_PLAYER_H
