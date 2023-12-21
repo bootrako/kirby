@@ -29,11 +29,17 @@ void btk_player_update(btk_ctx* ctx, btk_player* player) {
 
     player->vel = btk_vec_mul(player->vel, (btk_vec){ .x = ctx->cfg.player_vel_damp[0], .y = ctx->cfg.player_vel_damp[1] });
     player->vel = btk_vec_add(player->vel, accel);
-    player->vel.x = BTK_CLAMP(player->vel.x, -ctx->cfg.player_vel_max[0] * BTK_DT, ctx->cfg.player_vel_max[0] * BTK_DT);
-    player->vel.y = BTK_CLAMP(player->vel.y, -ctx->cfg.player_vel_max[1] * BTK_DT, ctx->cfg.player_vel_max[1] * BTK_DT);
+    player->vel.x = btk_clampf(player->vel.x, -ctx->cfg.player_vel_max[0] * BTK_DT, ctx->cfg.player_vel_max[0] * BTK_DT);
+    player->vel.y = btk_clampf(player->vel.y, -ctx->cfg.player_vel_max[1] * BTK_DT, ctx->cfg.player_vel_max[1] * BTK_DT);
 
     btk_vec desired = btk_vec_add((btk_vec){ .x = player->xform.x, .y = player->xform.y }, player->vel);
     btk_level_collision collision = btk_level_collide(ctx, player->level, player->xform, desired);
     player->xform.x = collision.pos.x;
     player->xform.y = collision.pos.y;
+}
+
+void btk_player_start_level(btk_ctx* ctx, btk_player* player, btk_level* level) {
+    player->level = level;
+    player->xform.x = level->player_start_x;
+    player->xform.y = level->player_start_y;
 }

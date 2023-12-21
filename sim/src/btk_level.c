@@ -1,5 +1,4 @@
 #include "btk_level.h"
-#include "btk_player.h"
 #include "btk_read.h"
 
 #define BTK_LEVEL_TILE_WIDTH 16
@@ -18,7 +17,7 @@ void btk_level_deinit(btk_ctx* ctx, btk_level* level) {
     }
 }
 
-void btk_level_load(btk_ctx* ctx, btk_level* level, btk_data data, btk_player* player) {
+void btk_level_load(btk_ctx* ctx, btk_level* level, btk_data data) {
     btk_level_deinit(ctx, level);
 
     int level_data_len = 0;
@@ -54,12 +53,8 @@ void btk_level_load(btk_ctx* ctx, btk_level* level, btk_data data, btk_player* p
         }
     }
 
-    int player_start_x = btk_read_int(ctx, &read);
-    int player_start_y = btk_read_int(ctx, &read);
-
-    player->level = level;
-    player->xform.x = (float)(player_start_x * BTK_LEVEL_TILE_WIDTH);
-    player->xform.y = (float)(player_start_y * BTK_LEVEL_TILE_HEIGHT);
+    level->player_start_x = (float)(btk_read_int(ctx, &read) * BTK_LEVEL_TILE_WIDTH);
+    level->player_start_y = (float)(btk_read_int(ctx, &read) * BTK_LEVEL_TILE_HEIGHT);
 }
 
 static bool btk_level_collide_x(btk_ctx* ctx, btk_level* level, btk_rect xform, float desired_x, float* out_resolved_x) {
@@ -73,10 +68,10 @@ static bool btk_level_collide_x(btk_ctx* ctx, btk_level* level, btk_rect xform, 
     int start_cell_y = (int)(xform.y) / BTK_LEVEL_TILE_HEIGHT;
     int end_cell_y = (int)(xform.y + xform.h - 1) / BTK_LEVEL_TILE_HEIGHT;
 
-    start_cell_x = BTK_CLAMP(start_cell_x, 0, level->width - 1);
-    end_cell_x = BTK_CLAMP(end_cell_x, -1, level->width);
-    start_cell_y = BTK_CLAMP(start_cell_y, 0, level->height - 1);
-    end_cell_y = BTK_CLAMP(end_cell_y, 0, level->height - 1);
+    start_cell_x = btk_clamp(start_cell_x, 0, level->width - 1);
+    end_cell_x = btk_clamp(end_cell_x, -1, level->width);
+    start_cell_y = btk_clamp(start_cell_y, 0, level->height - 1);
+    end_cell_y = btk_clamp(end_cell_y, 0, level->height - 1);
 
     for (int cell_x = start_cell_x; cell_x != end_cell_x; cell_x += dir_x) {
         for (int cell_y = start_cell_y; cell_y <= end_cell_y; ++cell_y) {
@@ -87,9 +82,9 @@ static bool btk_level_collide_x(btk_ctx* ctx, btk_level* level, btk_rect xform, 
         }
     }
 
-    int max_x = (level->width - 1) * BTK_LEVEL_TILE_WIDTH;
-    *out_resolved_x = BTK_CLAMP(desired_x, 0, max_x);
-    return desired_x >= 0 && desired_x <= max_x;
+    float max_x = (float)((level->width - 1) * BTK_LEVEL_TILE_WIDTH);
+    *out_resolved_x = btk_clampf(desired_x, 0.0f, max_x);
+    return desired_x >= 0.0f && desired_x <= max_x;
 }
 
 static bool btk_level_collide_y(btk_ctx* ctx, btk_level* level, btk_rect xform, float desired_y, float* out_resolved_y) {
@@ -103,10 +98,10 @@ static bool btk_level_collide_y(btk_ctx* ctx, btk_level* level, btk_rect xform, 
     int start_cell_x = (int)(xform.x) / BTK_LEVEL_TILE_WIDTH;
     int end_cell_x = (int)(xform.x + xform.w - 1) / BTK_LEVEL_TILE_WIDTH;
 
-    start_cell_y = BTK_CLAMP(start_cell_y, 0, level->height - 1);
-    end_cell_y = BTK_CLAMP(end_cell_y, -1, level->height);
-    start_cell_x = BTK_CLAMP(start_cell_x, 0, level->width - 1);
-    end_cell_x = BTK_CLAMP(end_cell_x, 0, level->width - 1);
+    start_cell_y = btk_clamp(start_cell_y, 0, level->height - 1);
+    end_cell_y = btk_clamp(end_cell_y, -1, level->height);
+    start_cell_x = btk_clamp(start_cell_x, 0, level->width - 1);
+    end_cell_x = btk_clamp(end_cell_x, 0, level->width - 1);
 
     for (int cell_y = start_cell_y; cell_y != end_cell_y; cell_y += dir_y) {
         for (int cell_x = start_cell_x; cell_x <= end_cell_x; ++cell_x) {
@@ -117,9 +112,9 @@ static bool btk_level_collide_y(btk_ctx* ctx, btk_level* level, btk_rect xform, 
         }
     }
 
-    int max_y = (level->height - 1) * BTK_LEVEL_TILE_HEIGHT;
-    *out_resolved_y = BTK_CLAMP(desired_y, 0, max_y);
-    return desired_y >= 0 && desired_y <= max_y;
+    float max_y = (float)((level->height - 1) * BTK_LEVEL_TILE_HEIGHT);
+    *out_resolved_y = btk_clampf(desired_y, 0.0f, max_y);
+    return desired_y >= 0.0f && desired_y <= max_y;
 }
 
 btk_level_collision btk_level_collide(btk_ctx* ctx, btk_level* level, btk_rect xform, btk_vec desired) {

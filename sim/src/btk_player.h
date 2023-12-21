@@ -15,5 +15,6 @@ typedef struct btk_player_t {
 
 void btk_player_init(btk_ctx* ctx, btk_player* player, btk_input* input);
 void btk_player_update(btk_ctx* ctx, btk_player* player);
+void btk_player_start_level(btk_ctx* ctx, btk_player* player, btk_level* level);
 
 #endif // BTK_PLAYER_H

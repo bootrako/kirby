@@ -3,12 +3,12 @@
 
 #include "btk_math.h"
 
-typedef struct btk_player_t btk_player;
-
 typedef struct btk_level_t {
     int width;
     int height;
     bool* collision;
+    float player_start_x;
+    float player_start_y;
 } btk_level;
 
 typedef struct btk_level_collision_t {
@@ -18,7 +18,7 @@ typedef struct btk_level_collision_t {
 
 void btk_level_init(btk_ctx* ctx, btk_level* level);
 void btk_level_deinit(btk_ctx* ctx, btk_level* level);
-void btk_level_load(btk_ctx* ctx, btk_level* level, btk_data data, btk_player* player);
+void btk_level_load(btk_ctx* ctx, btk_level* level, btk_data data);
 btk_level_collision btk_level_collide(btk_ctx* ctx, btk_level* level, btk_rect xform, btk_vec desired);
 
 #endif // BTK_LEVEL_H
