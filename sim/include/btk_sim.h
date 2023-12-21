@@ -20,6 +20,12 @@ typedef enum btk_data_t {
     BTK_DATA_COUNT,
 } btk_data;
 
+typedef struct btk_cfg_t {
+    float player_accel[2];
+    float player_vel_max[2];
+    float player_vel_damp[2];
+} btk_cfg;
+
 typedef struct btk_host_t {
     void*(*alloc)(void* ctx, int size);                                 // allocate memory with the given size
     void(*free)(void* ctx, void* ptr);                                  // free allocated memory
@@ -27,6 +33,7 @@ typedef struct btk_host_t {
     void(*log)(void* ctx, char* msg);                                   // prints message to output
     bool(*is_action_active)(void* ctx, btk_action action);              // returns true if the action is currently being activated
     char*(*read_data)(void* ctx, btk_data data, int* out_len);          // opens the specified data file and returns the contents
+    void(*read_cfg)(void* ctx, btk_cfg* cfg);                           // reads the current state of dynamic config
     void* ctx;                                                          // context object for storing host data
 } btk_host;
 

@@ -1,5 +1,4 @@
 #include "btk_input.h"
-#include "btk_utils.h"
 
 void btk_input_init(btk_ctx* ctx, btk_input* input) {
     for (int i = 0; i < BTK_ACTION_COUNT * 2; ++i) {

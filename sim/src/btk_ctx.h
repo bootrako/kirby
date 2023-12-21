@@ -5,9 +5,11 @@
 
 typedef struct btk_ctx {
     btk_host host;
+    btk_cfg cfg;
 } btk_ctx;
 
 void btk_ctx_init(btk_ctx* ctx, btk_host host);
+void btk_ctx_update(btk_ctx* ctx);
 
 void* btk_ctx_alloc(btk_ctx* ctx, int size);
 void btk_ctx_free(btk_ctx* ctx, void* ptr);

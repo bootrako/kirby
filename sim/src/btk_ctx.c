@@ -4,6 +4,10 @@ void btk_ctx_init(btk_ctx* ctx, btk_host host) {
     ctx->host = host;
 }
 
+void btk_ctx_update(btk_ctx* ctx) {
+    ctx->host.read_cfg(ctx->host.ctx, &ctx->cfg);
+}
+
 void* btk_ctx_alloc(btk_ctx* ctx, int size) {
     return ctx->host.alloc(ctx->host.ctx, size);
 }
