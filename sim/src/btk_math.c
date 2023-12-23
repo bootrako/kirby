@@ -24,6 +24,10 @@ float btk_clampf(float x, float min, float max) {
     return btk_maxf(btk_minf(x, max), min);
 }
 
+int btk_signf(float x) {
+    return x > 0.0f ? 1 : -1;
+}
+
 btk_vec btk_vec_add(btk_vec a, btk_vec b) {
     return (btk_vec){ .x = a.x + b.x, .y = a.y + b.y };
 }

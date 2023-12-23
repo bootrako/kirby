@@ -40,6 +40,16 @@ void GodotSim::_process(double delta_time) {
     }
 }
 
+Vector2 GodotSim::get_player_pos() const {
+    btk_sim_vec pos = btk_sim_get_player_pos(sim);
+    return Vector2(pos.x, pos.y);
+}
+
+Vector2 GodotSim::get_player_vel() const {
+    btk_sim_vec vel = btk_sim_get_player_vel(sim);
+    return Vector2(vel.x, vel.y);
+}
+
 void GodotSim::set_player_accel(Vector2 player_accel) {
     cfg.player_accel[0] = player_accel.x;
     cfg.player_accel[1] = player_accel.y;
@@ -68,7 +78,8 @@ Vector2 GodotSim::get_player_vel_damp() const {
 }
 
 void GodotSim::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("get_player_pos"), &GodotSim::_sim_get_player_pos);
+    ClassDB::bind_method(D_METHOD("get_player_pos"), &GodotSim::get_player_pos);
+    ClassDB::bind_method(D_METHOD("get_player_vel"), &GodotSim::get_player_vel);
 
     ClassDB::bind_method(D_METHOD("set_player_accel", "player_accel"), &GodotSim::set_player_accel);
     ClassDB::bind_method(D_METHOD("get_player_accel"), &GodotSim::get_player_accel);
@@ -81,12 +92,6 @@ void GodotSim::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_player_vel_damp", "player_vel_damp"), &GodotSim::set_player_vel_damp);
     ClassDB::bind_method(D_METHOD("get_player_vel_damp"), &GodotSim::get_player_vel_damp);
     ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "player_vel_damp"), "set_player_vel_damp", "get_player_vel_damp");
-}
-
-Vector2i GodotSim::_sim_get_player_pos() const {
-    int x, y;
-    btk_sim_get_player_pos(sim, &x, &y);
-    return Vector2i(x, y);
 }
 
 void* GodotSim::_godot_alloc(void* ctx, int size) {

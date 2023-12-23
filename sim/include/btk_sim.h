@@ -39,6 +39,11 @@ typedef struct btk_host_t {
 
 typedef struct btk_sim_t btk_sim;
 
+typedef struct btk_sim_vec_t {
+    float x;
+    float y;
+} btk_sim_vec;
+
 // initializes the simulation. internally allocates memory that can only be freed by calling deinit
 btk_sim* btk_sim_init(btk_host host);
 
@@ -48,8 +53,11 @@ void btk_sim_deinit(btk_sim* sim);
 // performs sim frame updates based on the time passed since last update
 void btk_sim_update(btk_sim* sim, float delta_time);
 
-// gets the player's current position, in world space.
-void btk_sim_get_player_pos(btk_sim* sim, int* out_x, int* out_y);
+// gets the player's current position in pixels.
+btk_sim_vec btk_sim_get_player_pos(btk_sim* sim);
+
+// gets the players current velocity in pixels per second
+btk_sim_vec btk_sim_get_player_vel(btk_sim* sim);
 
 #ifdef __cplusplus
 }

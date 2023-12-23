@@ -15,6 +15,9 @@ public:
 
     void _process(double delta);
 
+    Vector2 get_player_pos() const;
+    Vector2 get_player_vel() const;
+    
     void set_player_accel(Vector2 player_accel);
     Vector2 get_player_accel() const;
 
@@ -28,8 +31,6 @@ protected:
     static void _bind_methods();
 
 private:
-    Vector2i _sim_get_player_pos() const;
-
     static void* _godot_alloc(void* ctx, int size);
     static void _godot_free(void* ctx, void* ptr);
     static void _godot_panic(void* ctx, char* err_msg);

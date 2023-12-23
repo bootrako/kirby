@@ -47,7 +47,10 @@ void btk_sim_update(btk_sim* sim, float delta_time) {
     }
 }
 
-void btk_sim_get_player_pos(btk_sim* sim, int* out_x, int* out_y) {
-    *out_x = (int)sim->player.xform.x;
-    *out_y = (int)sim->player.xform.y;
+btk_sim_vec btk_sim_get_player_pos(btk_sim* sim) {
+    return (btk_sim_vec){ .x = sim->player.xform.x, .y = sim->player.xform.y };
+}
+
+btk_sim_vec btk_sim_get_player_vel(btk_sim* sim) {
+    return (btk_sim_vec){ .x = sim->player.vel.x, .y = sim->player.vel.y };
 }

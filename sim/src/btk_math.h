@@ -9,6 +9,7 @@ int btk_max(int a, int b);
 float btk_maxf(float a, float b);
 int btk_clamp(int x, int min, int max);
 float btk_clampf(float x, float min, float max);
+int btk_signf(float x);
 
 typedef struct btk_vec2_t {
     float x;

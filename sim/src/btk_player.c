@@ -13,7 +13,7 @@ void btk_player_init(btk_ctx* ctx, btk_player* player, btk_input* input) {
 }
 
 void btk_player_update(btk_ctx* ctx, btk_player* player) {
-    btk_vec accel = (btk_vec){ .x = 0, .y = 0 };
+    btk_vec accel = (btk_vec){ .x = 0.0f, .y = 0.0f };
     if (btk_input_active(ctx, player->input, BTK_ACTION_MOVE_LEFT)) {
         accel.x -= ctx->cfg.player_accel[0] * BTK_DT;
     }
@@ -27,8 +27,24 @@ void btk_player_update(btk_ctx* ctx, btk_player* player) {
         accel.y += ctx->cfg.player_accel[1] * BTK_DT;
     }
 
-    player->vel = btk_vec_mul(player->vel, (btk_vec){ .x = ctx->cfg.player_vel_damp[0], .y = ctx->cfg.player_vel_damp[1] });
     player->vel = btk_vec_add(player->vel, accel);
+
+    if (accel.x == 0.0f) {
+        float vel_damp = ctx->cfg.player_vel_damp[0] * BTK_DT;
+        if (player->vel.x > -vel_damp && player->vel.x < vel_damp) {
+            player->vel.x = 0.0f;
+        } else {
+            player->vel.x += vel_damp * -btk_signf(player->vel.x);
+        }
+    }
+    if (accel.y == 0.0f) {
+        float vel_damp = ctx->cfg.player_vel_damp[1] * BTK_DT;
+        if (player->vel.y > -vel_damp && player->vel.y < vel_damp) {
+            player->vel.y = 0.0f;
+        } else {
+            player->vel.y += vel_damp * -btk_signf(player->vel.y);
+        }
+    }
     player->vel.x = btk_clampf(player->vel.x, -ctx->cfg.player_vel_max[0] * BTK_DT, ctx->cfg.player_vel_max[0] * BTK_DT);
     player->vel.y = btk_clampf(player->vel.y, -ctx->cfg.player_vel_max[1] * BTK_DT, ctx->cfg.player_vel_max[1] * BTK_DT);
 
