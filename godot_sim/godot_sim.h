@@ -24,8 +24,14 @@ public:
     void set_player_vel_max(Vector2 player_vel_max);
     Vector2 get_player_vel_max() const;
 
-    void set_player_vel_damp(Vector2 player_vel_damp);
-    Vector2 get_player_vel_damp() const;
+    void set_player_vel_damp_x(float player_vel_damp_x);
+    float get_player_vel_damp_x() const;
+
+    void set_player_gravity(float player_gravity);
+    float get_player_gravity() const;
+
+    void set_player_max_jump_timer(float player_max_jump_timer);
+    float get_player_max_jump_timer() const;
 
 protected:
     static void _bind_methods();

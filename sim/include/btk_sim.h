@@ -10,8 +10,10 @@ extern "C" {
 typedef enum btk_action_t {
     BTK_ACTION_MOVE_LEFT,
     BTK_ACTION_MOVE_RIGHT,
-    BTK_ACTION_MOVE_UP,
-    BTK_ACTION_MOVE_DOWN,
+    BTK_ACTION_FLOAT,
+    BTK_ACTION_CROUCH,
+    BTK_ACTION_JUMP,
+    BTK_ACTION_INHALE,
     BTK_ACTION_COUNT,
 } btk_action;
 
@@ -23,7 +25,9 @@ typedef enum btk_data_t {
 typedef struct btk_cfg_t {
     float player_accel[2];
     float player_vel_max[2];
-    float player_vel_damp[2];
+    float player_vel_damp_x;
+    float player_gravity;
+    float player_max_jump_timer;
 } btk_cfg;
 
 typedef struct btk_host_t {

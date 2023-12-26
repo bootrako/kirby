@@ -57,11 +57,11 @@ void btk_level_load(btk_ctx* ctx, btk_level* level, btk_data data) {
     level->player_start_y = (float)(btk_read_int(ctx, &read) * BTK_LEVEL_TILE_HEIGHT);
 }
 
-static bool btk_level_collide_x(btk_ctx* ctx, btk_level* level, btk_rect xform, float desired_x, float* out_resolved_x) {
+static bool btk_level_collide_x(btk_ctx* ctx, btk_level* level, btk_rect xform, float desired_x, float* out_pos_x, float* out_normal_x) {
     bool moving_r = desired_x > xform.x;
     int dir_x = moving_r ? 1 : -1;
-    int edge_offset_x = moving_r ? (int)(xform.w - 1) : 0;
-    int cell_offset_x = moving_r ? (int)(-xform.w) : BTK_LEVEL_TILE_WIDTH;
+    int edge_offset_x = moving_r ? (int)xform.w : 0;
+    int cell_offset_x = moving_r ? (int)-xform.w : BTK_LEVEL_TILE_WIDTH;
 
     int start_cell_x = (int)(xform.x + edge_offset_x) / BTK_LEVEL_TILE_WIDTH;
     int end_cell_x = ((int)(desired_x + edge_offset_x) / BTK_LEVEL_TILE_WIDTH) + dir_x;
@@ -76,22 +76,25 @@ static bool btk_level_collide_x(btk_ctx* ctx, btk_level* level, btk_rect xform, 
     for (int cell_x = start_cell_x; cell_x != end_cell_x; cell_x += dir_x) {
         for (int cell_y = start_cell_y; cell_y <= end_cell_y; ++cell_y) {
             if (level->collision[level->width * cell_y + cell_x]) {
-                *out_resolved_x = (float)(cell_x * BTK_LEVEL_TILE_WIDTH + cell_offset_x);
+                *out_pos_x = (float)(cell_x * BTK_LEVEL_TILE_WIDTH + cell_offset_x);
+                *out_normal_x = (float)-dir_x;
                 return true;
             }
         }
     }
 
     float max_x = (float)((level->width - 1) * BTK_LEVEL_TILE_WIDTH);
-    *out_resolved_x = btk_clampf(desired_x, 0.0f, max_x);
-    return desired_x >= 0.0f && desired_x <= max_x;
+    bool collided_x = desired_x < 0.0f || desired_x > max_x;
+    *out_pos_x = btk_clampf(desired_x, 0.0f, max_x);
+    *out_normal_x = collided_x ? (float)-dir_x : 0.0f;
+    return collided_x;
 }
 
-static bool btk_level_collide_y(btk_ctx* ctx, btk_level* level, btk_rect xform, float desired_y, float* out_resolved_y) {
+static bool btk_level_collide_y(btk_ctx* ctx, btk_level* level, btk_rect xform, float desired_y, float* out_pos_y, float* out_normal_y) {
     bool moving_d = desired_y > xform.y;
     int dir_y = moving_d ? 1 : -1;
-    int edge_offset_y = moving_d ? (int)(xform.h - 1) : 0;
-    int cell_offset_y = moving_d ? (int)(-xform.h) : BTK_LEVEL_TILE_HEIGHT;
+    int edge_offset_y = moving_d ? (int)xform.h : 0;
+    int cell_offset_y = moving_d ? (int)-xform.h : BTK_LEVEL_TILE_HEIGHT;
 
     int start_cell_y = (int)(xform.y + edge_offset_y) / BTK_LEVEL_TILE_HEIGHT;
     int end_cell_y = ((int)(desired_y + edge_offset_y) / BTK_LEVEL_TILE_HEIGHT) + dir_y;
@@ -106,24 +109,27 @@ static bool btk_level_collide_y(btk_ctx* ctx, btk_level* level, btk_rect xform, 
     for (int cell_y = start_cell_y; cell_y != end_cell_y; cell_y += dir_y) {
         for (int cell_x = start_cell_x; cell_x <= end_cell_x; ++cell_x) {
             if (level->collision[level->width * cell_y + cell_x]) {
-                *out_resolved_y = (float)(cell_y * BTK_LEVEL_TILE_HEIGHT + cell_offset_y);
+                *out_pos_y = (float)(cell_y * BTK_LEVEL_TILE_HEIGHT + cell_offset_y);
+                *out_normal_y = (float)-dir_y;
                 return true;
             }
         }
     }
 
     float max_y = (float)((level->height - 1) * BTK_LEVEL_TILE_HEIGHT);
-    *out_resolved_y = btk_clampf(desired_y, 0.0f, max_y);
-    return desired_y >= 0.0f && desired_y <= max_y;
+    bool collided_y = desired_y < 0.0f || desired_y > max_y;
+    *out_pos_y = btk_clampf(desired_y, 0.0f, max_y);
+    *out_normal_y = collided_y ? (float)-dir_y : 0.0f;
+    return collided_y; 
 }
 
 btk_level_collision btk_level_collide(btk_ctx* ctx, btk_level* level, btk_rect xform, btk_vec desired) {
-    btk_level_collision collision = { .pos = desired, .collided = false };
+    btk_level_collision collision = { .pos = desired, .normal = BTK_VEC_ZERO, .collided = false };
     if (desired.x != xform.x) {
-        collision.collided |= btk_level_collide_x(ctx, level, xform, desired.x, &collision.pos.x);
+        collision.collided |= btk_level_collide_x(ctx, level, xform, desired.x, &collision.pos.x, &collision.normal.x);
     }
     if (desired.y != xform.y) {
-        collision.collided |= btk_level_collide_y(ctx, level, xform, desired.y, &collision.pos.y);
+        collision.collided |= btk_level_collide_y(ctx, level, xform, desired.y, &collision.pos.y, &collision.normal.y);
     }
     return collision;
 }

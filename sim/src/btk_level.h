@@ -13,6 +13,7 @@ typedef struct btk_level_t {
 
 typedef struct btk_level_collision_t {
     btk_vec pos;
+    btk_vec normal;
     bool collided;
 } btk_level_collision;
 

@@ -68,13 +68,28 @@ Vector2 GodotSim::get_player_vel_max() const {
     return Vector2(cfg.player_vel_max[0], cfg.player_vel_max[1]);
 }
 
-void GodotSim::set_player_vel_damp(Vector2 player_vel_damp) {
-    cfg.player_vel_damp[0] = player_vel_damp.x;
-    cfg.player_vel_damp[1] = player_vel_damp.y;
+void GodotSim::set_player_vel_damp_x(float player_vel_damp_x) {
+    cfg.player_vel_damp_x = player_vel_damp_x;
 }
 
-Vector2 GodotSim::get_player_vel_damp() const {
-    return Vector2(cfg.player_vel_damp[0], cfg.player_vel_damp[1]);
+float GodotSim::get_player_vel_damp_x() const {
+    return cfg.player_vel_damp_x;
+}
+
+void GodotSim::set_player_gravity(float player_gravity) {
+    cfg.player_gravity = player_gravity;
+}
+
+float GodotSim::get_player_gravity() const {
+    return cfg.player_gravity;
+}
+
+void GodotSim::set_player_max_jump_timer(float player_max_jump_timer) {
+    cfg.player_max_jump_timer = player_max_jump_timer;
+}
+
+float GodotSim::get_player_max_jump_timer() const {
+    return cfg.player_max_jump_timer;
 }
 
 void GodotSim::_bind_methods() {
@@ -89,9 +104,17 @@ void GodotSim::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_player_vel_max"), &GodotSim::get_player_vel_max);
     ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "player_vel_max"), "set_player_vel_max", "get_player_vel_max");
 
-    ClassDB::bind_method(D_METHOD("set_player_vel_damp", "player_vel_damp"), &GodotSim::set_player_vel_damp);
-    ClassDB::bind_method(D_METHOD("get_player_vel_damp"), &GodotSim::get_player_vel_damp);
-    ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "player_vel_damp"), "set_player_vel_damp", "get_player_vel_damp");
+    ClassDB::bind_method(D_METHOD("set_player_vel_damp_x", "player_vel_damp_x"), &GodotSim::set_player_vel_damp_x);
+    ClassDB::bind_method(D_METHOD("get_player_vel_damp_x"), &GodotSim::get_player_vel_damp_x);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "player_vel_damp_x"), "set_player_vel_damp_x", "get_player_vel_damp_x");
+
+    ClassDB::bind_method(D_METHOD("set_player_gravity", "player_gravity"), &GodotSim::set_player_gravity);
+    ClassDB::bind_method(D_METHOD("get_player_gravity"), &GodotSim::get_player_gravity);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "player_gravity"), "set_player_gravity", "get_player_gravity");
+
+    ClassDB::bind_method(D_METHOD("set_player_max_jump_timer", "player_max_jump_timer"), &GodotSim::set_player_max_jump_timer);
+    ClassDB::bind_method(D_METHOD("get_player_max_jump_timer"), &GodotSim::get_player_max_jump_timer);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "player_max_jump_timer"), "set_player_max_jump_timer", "get_player_max_jump_timer");
 }
 
 void* GodotSim::_godot_alloc(void* ctx, int size) {
@@ -114,8 +137,10 @@ bool GodotSim::_godot_is_action_active(void* ctx, btk_action action) {
     const char* input_action_to_string[] = {
         "move_left",    // BTK_ACTION_MOVE_LEFT
         "move_right",   // BTK_ACTION_MOVE_RIGHT
-        "move_up",      // BTK_ACTION_MOVE_UP
-        "move_down",    // BTK_ACTION_MOVE_DOWN
+        "float",        // BTK_ACTION_FLOAT
+        "crouch",       // BTK_ACTION_CROUCH
+        "jump",         // BTK_ACTION_JUMP
+        "inhale",       // BTK_ACTION_INHALE
     };
     return Input::get_singleton()->is_action_pressed(input_action_to_string[action]);
 }

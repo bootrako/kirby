@@ -19,6 +19,8 @@ typedef struct btk_vec2_t {
 btk_vec btk_vec_add(btk_vec a, btk_vec b);
 btk_vec btk_vec_mul(btk_vec a, btk_vec b);
 
+#define BTK_VEC_ZERO (btk_vec){ .x = 0.0f, .y = 0.0f }
+
 typedef struct btk_rect_t {
     float x;
     float y;

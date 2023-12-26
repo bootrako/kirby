@@ -11,6 +11,8 @@ typedef struct btk_player_t {
     btk_level* level;
     btk_rect xform;
     btk_vec vel;
+    float jump_timer;
+    bool can_jump;
 } btk_player;
 
 void btk_player_init(btk_ctx* ctx, btk_player* player, btk_input* input);
