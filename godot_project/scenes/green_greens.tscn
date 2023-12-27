@@ -7,11 +7,13 @@
 [node name="green_greens" type="Node"]
 
 [node name="sim" type="GodotSim" parent="."]
-player_accel = Vector2(5, 50)
-player_vel_max = Vector2(70, 100)
-player_vel_damp_x = 2.0
-player_gravity = 8.0
-player_max_jump_timer = 0.3
+cfg = {
+"accel": Vector2(5, 50),
+"gravity": 8.0,
+"max jump timer": 0.3,
+"vel damp x": 2.0,
+"vel max": Vector2(70, 100)
+}
 
 [node name="map" type="TileMap" parent="."]
 tile_set = ExtResource("2_ytr8y")

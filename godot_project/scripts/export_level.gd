@@ -40,16 +40,16 @@ func _run() -> void:
                 out_data += "0"
         out_data += "\n"
 
-    var player := find_child_by_class(scene, "Player") as Player
-    if player == null:
-        push_error("failed to find player node")
+    var kirby := find_child_by_class(scene, "Kirby") as Kirby
+    if kirby == null:
+        push_error("failed to find kirby node")
         return
     
     var tile_set := tilemap.tile_set
     if tile_set == null:
         push_error("tilemap has no tileset assigned")
         return
-    var player_cell := Vector2i(player.position) / tile_set.tile_size
+    var player_cell := Vector2i(kirby.position) / tile_set.tile_size
     out_data += str(player_cell.x) + "\n"
     out_data += str(player_cell.y) + "\n"
     

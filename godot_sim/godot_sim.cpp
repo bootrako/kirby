@@ -38,83 +38,33 @@ void GodotSim::_process(double delta_time) {
     if (sim != nullptr) {
         btk_sim_update(sim, delta_time);        
     }
+
+    set_info();
 }
 
-Vector2 GodotSim::get_player_pos() const {
-    btk_sim_vec pos = btk_sim_get_player_pos(sim);
-    return Vector2(pos.x, pos.y);
+Dictionary GodotSim::get_info() const {
+    return info;
 }
 
-Vector2 GodotSim::get_player_vel() const {
-    btk_sim_vec vel = btk_sim_get_player_vel(sim);
-    return Vector2(vel.x, vel.y);
+void GodotSim::set_info() {
+    btk_sim_vec player_pos = btk_sim_get_player_pos(sim);
+    info["player_pos"] = Vector2(player_pos.x, player_pos.y);
 }
 
-void GodotSim::set_player_accel(Vector2 player_accel) {
-    cfg.player_accel[0] = player_accel.x;
-    cfg.player_accel[1] = player_accel.y;
+void GodotSim::set_cfg(Dictionary cfg) {
+    this->cfg = cfg;
 }
 
-Vector2 GodotSim::get_player_accel() const {
-    return Vector2(cfg.player_accel[0], cfg.player_accel[1]);
-}
-
-void GodotSim::set_player_vel_max(Vector2 player_vel_max) {
-    cfg.player_vel_max[0] = player_vel_max.x;
-    cfg.player_vel_max[1] = player_vel_max.y;
-}
-
-Vector2 GodotSim::get_player_vel_max() const {
-    return Vector2(cfg.player_vel_max[0], cfg.player_vel_max[1]);
-}
-
-void GodotSim::set_player_vel_damp_x(float player_vel_damp_x) {
-    cfg.player_vel_damp_x = player_vel_damp_x;
-}
-
-float GodotSim::get_player_vel_damp_x() const {
-    return cfg.player_vel_damp_x;
-}
-
-void GodotSim::set_player_gravity(float player_gravity) {
-    cfg.player_gravity = player_gravity;
-}
-
-float GodotSim::get_player_gravity() const {
-    return cfg.player_gravity;
-}
-
-void GodotSim::set_player_max_jump_timer(float player_max_jump_timer) {
-    cfg.player_max_jump_timer = player_max_jump_timer;
-}
-
-float GodotSim::get_player_max_jump_timer() const {
-    return cfg.player_max_jump_timer;
+Dictionary GodotSim::get_cfg() const {
+    return cfg;
 }
 
 void GodotSim::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("get_player_pos"), &GodotSim::get_player_pos);
-    ClassDB::bind_method(D_METHOD("get_player_vel"), &GodotSim::get_player_vel);
+    ClassDB::bind_method(D_METHOD("get_info"), &GodotSim::get_info);
 
-    ClassDB::bind_method(D_METHOD("set_player_accel", "player_accel"), &GodotSim::set_player_accel);
-    ClassDB::bind_method(D_METHOD("get_player_accel"), &GodotSim::get_player_accel);
-    ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "player_accel"), "set_player_accel", "get_player_accel");
-
-    ClassDB::bind_method(D_METHOD("set_player_vel_max", "player_vel_max"), &GodotSim::set_player_vel_max);
-    ClassDB::bind_method(D_METHOD("get_player_vel_max"), &GodotSim::get_player_vel_max);
-    ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "player_vel_max"), "set_player_vel_max", "get_player_vel_max");
-
-    ClassDB::bind_method(D_METHOD("set_player_vel_damp_x", "player_vel_damp_x"), &GodotSim::set_player_vel_damp_x);
-    ClassDB::bind_method(D_METHOD("get_player_vel_damp_x"), &GodotSim::get_player_vel_damp_x);
-    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "player_vel_damp_x"), "set_player_vel_damp_x", "get_player_vel_damp_x");
-
-    ClassDB::bind_method(D_METHOD("set_player_gravity", "player_gravity"), &GodotSim::set_player_gravity);
-    ClassDB::bind_method(D_METHOD("get_player_gravity"), &GodotSim::get_player_gravity);
-    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "player_gravity"), "set_player_gravity", "get_player_gravity");
-
-    ClassDB::bind_method(D_METHOD("set_player_max_jump_timer", "player_max_jump_timer"), &GodotSim::set_player_max_jump_timer);
-    ClassDB::bind_method(D_METHOD("get_player_max_jump_timer"), &GodotSim::get_player_max_jump_timer);
-    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "player_max_jump_timer"), "set_player_max_jump_timer", "get_player_max_jump_timer");
+    ClassDB::bind_method(D_METHOD("set_cfg", "cfg"), &GodotSim::set_cfg);
+    ClassDB::bind_method(D_METHOD("get_cfg"), &GodotSim::get_cfg);
+    ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "cfg"), "set_cfg", "get_cfg");
 }
 
 void* GodotSim::_godot_alloc(void* ctx, int size) {
@@ -156,5 +106,16 @@ char* GodotSim::_godot_read_data(void* ctx, btk_data data, int* out_len) {
 
 void GodotSim::_godot_read_cfg(void* ctx, btk_cfg* cfg) {
     GodotSim* godot_sim = static_cast<GodotSim*>(ctx);
-    *cfg = godot_sim->cfg;
+
+    Vector2 accel = godot_sim->cfg["accel"];
+    cfg->player_accel.x = accel.x;
+    cfg->player_accel.y = accel.y;
+
+    Vector2 vel_max = godot_sim->cfg["vel max"];
+    cfg->player_vel_max.x = vel_max.x;
+    cfg->player_vel_max.y = vel_max.y;
+
+    cfg->player_vel_damp_x = godot_sim->cfg["vel damp x"];
+    cfg->player_gravity = godot_sim->cfg["gravity"];
+    cfg->player_max_jump_timer = godot_sim->cfg["max jump timer"];
 }
