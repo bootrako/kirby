@@ -8,11 +8,11 @@
 
 [node name="sim" type="GodotSim" parent="."]
 cfg = {
-"accel": Vector2(5, 50),
+"accel": Vector2(5, 100),
 "gravity": 8.0,
 "max jump timer": 0.3,
 "vel damp x": 2.0,
-"vel max": Vector2(70, 100)
+"vel max": Vector2(70, 120)
 }
 
 [node name="map" type="TileMap" parent="."]
@@ -33,7 +33,9 @@ layer_1/tile_data = PackedInt32Array(393216, 65536, 0, 393217, 65536, 0, 393218,
 [node name="kirby" type="AnimatedSprite2D" parent="." node_paths=PackedStringArray("sim")]
 position = Vector2(32, 80)
 sprite_frames = ExtResource("2_h50eg")
-animation = &"idle"
+animation = &"run"
+frame_progress = 0.212193
 centered = false
 script = ExtResource("3_wuesq")
 sim = NodePath("../sim")
+run_anim_vel = 0.1

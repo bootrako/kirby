@@ -22,7 +22,7 @@ protected:
     static void _bind_methods();
 
 private:
-    void set_info();
+    void update_info();
     void set_cfg(Dictionary cfg);
 
     static void* _godot_alloc(void* ctx, int size);

@@ -39,31 +39,34 @@ void GodotSim::_process(double delta_time) {
         btk_sim_update(sim, delta_time);        
     }
 
-    set_info();
+    update_info();
 }
 
 Dictionary GodotSim::get_info() const {
     return info;
 }
 
-void GodotSim::set_info() {
+void GodotSim::update_info() {
     btk_sim_vec player_pos = btk_sim_get_player_pos(sim);
     info["player_pos"] = Vector2(player_pos.x, player_pos.y);
-}
-
-void GodotSim::set_cfg(Dictionary cfg) {
-    this->cfg = cfg;
+    btk_sim_vec player_vel = btk_sim_get_player_vel(sim);
+    info["player_vel"] = Vector2(player_vel.x, player_vel.y);
+    info["player_is_grounded"] = btk_sim_get_player_is_grounded(sim);
 }
 
 Dictionary GodotSim::get_cfg() const {
     return cfg;
 }
 
+void GodotSim::set_cfg(Dictionary cfg) {
+    this->cfg = cfg;
+}
+
 void GodotSim::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_info"), &GodotSim::get_info);
 
-    ClassDB::bind_method(D_METHOD("set_cfg", "cfg"), &GodotSim::set_cfg);
     ClassDB::bind_method(D_METHOD("get_cfg"), &GodotSim::get_cfg);
+    ClassDB::bind_method(D_METHOD("set_cfg", "cfg"), &GodotSim::set_cfg);
     ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "cfg"), "set_cfg", "get_cfg");
 }
 

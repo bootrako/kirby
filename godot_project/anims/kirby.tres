@@ -1,6 +1,10 @@
-[gd_resource type="SpriteFrames" load_steps=7 format=3 uid="uid://b8esbn7mwy5ip"]
+[gd_resource type="SpriteFrames" load_steps=8 format=3 uid="uid://b8esbn7mwy5ip"]
 
 [ext_resource type="Texture2D" uid="uid://jubqmr80omsx" path="res://sprites/kirby.png" id="1_wbsyt"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2l2sf"]
+atlas = ExtResource("1_wbsyt")
+region = Rect2(32, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_p7vog"]
 atlas = ExtResource("1_wbsyt")
@@ -18,12 +22,20 @@ region = Rect2(16, 16, 16, 16)
 atlas = ExtResource("1_wbsyt")
 region = Rect2(32, 16, 16, 16)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_2gm7q"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_p1l78"]
 atlas = ExtResource("1_wbsyt")
-region = Rect2(48, 16, 16, 16)
+region = Rect2(16, 16, 16, 16)
 
 [resource]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2l2sf")
+}],
+"loop": true,
+"name": &"fall",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_p7vog")
@@ -43,9 +55,9 @@ animations = [{
 "texture": SubResource("AtlasTexture_h6pk6")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_2gm7q")
+"texture": SubResource("AtlasTexture_p1l78")
 }],
 "loop": true,
 "name": &"run",
-"speed": 5.0
+"speed": 6.0
 }]

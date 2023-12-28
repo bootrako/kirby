@@ -59,6 +59,10 @@ void btk_sim_update(btk_sim* sim, float delta_time);
 
 btk_sim_vec btk_sim_get_player_pos(btk_sim* sim);
 
+btk_sim_vec btk_sim_get_player_vel(btk_sim* sim);
+
+bool btk_sim_get_player_is_grounded(btk_sim* sim);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus

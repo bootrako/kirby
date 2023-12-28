@@ -10,8 +10,9 @@ void btk_player_init(btk_ctx* ctx, btk_player* player, btk_input* input) {
     player->level = NULL;
     player->xform = (btk_rect){ .x = 0.0f, .y = 0.0f, .w = BTK_PLAYER_BASE_W, .h = BTK_PLAYER_BASE_H };
     player->vel = (btk_vec){ .x = 0.0f, .y = 0.0f };
-    player->can_jump = false;
     player->jump_timer = 0.0f;
+    player->is_jumping = false;
+    player->is_grounded = false;
 }
 
 void btk_player_update(btk_ctx* ctx, btk_player* player) {
@@ -22,14 +23,15 @@ void btk_player_update(btk_ctx* ctx, btk_player* player) {
     if (btk_input_active(ctx, player->input, BTK_ACTION_MOVE_RIGHT)) {
         accel.x += ctx->cfg.player_accel.x * BTK_DT;
     }
-    if (btk_input_active(ctx, player->input, BTK_ACTION_JUMP) && player->can_jump) {
+    if (btk_input_active(ctx, player->input, BTK_ACTION_JUMP) && (player->is_grounded || player->is_jumping)) {
         accel.y -= ctx->cfg.player_accel.y * BTK_DT;
+        player->is_jumping = true;
         player->jump_timer += BTK_DT;
     }
-    if ((btk_input_just_inactive(ctx, player->input, BTK_ACTION_JUMP) && player->can_jump) || player->jump_timer > ctx->cfg.player_max_jump_timer) {
-        player->can_jump = false;
+    if ((btk_input_just_inactive(ctx, player->input, BTK_ACTION_JUMP) && player->is_jumping) || player->jump_timer > ctx->cfg.player_max_jump_timer) {
+        player->is_jumping = false;
     }
-    if (!player->can_jump) {
+    if (!player->is_jumping) {
         accel.y += ctx->cfg.player_gravity * BTK_DT;
     }
 
@@ -51,9 +53,10 @@ void btk_player_update(btk_ctx* ctx, btk_player* player) {
     player->xform.x = collision.pos.x;
     player->xform.y = collision.pos.y;
 
-    if (!player->can_jump && collision.collided && collision.normal.y == -1.0f) {
-        player->can_jump = true;
-        player->vel.y = 0.0f;
+    bool was_grounded = player->is_grounded;
+    player->is_grounded = collision.collided && collision.normal.y == -1.0f;
+    bool just_landed = player->is_grounded && !was_grounded;
+    if (just_landed) {
         player->jump_timer = 0.0f;
     }
 }
