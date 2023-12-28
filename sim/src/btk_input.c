@@ -11,18 +11,18 @@ void btk_input_init(btk_ctx* ctx, btk_input* input) {
 void btk_input_update(btk_ctx* ctx, btk_input* input) {
     BTK_SWAP(bool*, input->cur, input->prv);
     for (int i = 0; i < BTK_ACTION_COUNT; ++i) {
-        input->cur[i] = btk_ctx_is_action_active(ctx, i);
+        input->cur[i] = btk_ctx_is_action_pressed(ctx, i);
     }
 }
 
-bool btk_input_active(btk_ctx* ctx, btk_input* input, btk_action action) {
+bool btk_input_pressed(btk_ctx* ctx, btk_input* input, btk_action action) {
     return input->cur[action];
 }
 
-bool btk_input_just_active(btk_ctx* ctx, btk_input* input, btk_action action) {
+bool btk_input_just_pressed(btk_ctx* ctx, btk_input* input, btk_action action) {
     return input->cur[action] && !input->prv[action];
 }
 
-bool btk_input_just_inactive(btk_ctx* ctx, btk_input* input, btk_action action) {
+bool btk_input_just_released(btk_ctx* ctx, btk_input* input, btk_action action) {
     return !input->cur[action] && input->prv[action];
 }

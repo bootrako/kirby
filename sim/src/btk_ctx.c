@@ -24,8 +24,8 @@ void btk_ctx_log(btk_ctx* ctx, char* msg) {
     ctx->host.log(ctx->host.ctx, msg);
 }
 
-bool btk_ctx_is_action_active(btk_ctx* ctx, btk_action action) {
-    return ctx->host.is_action_active(ctx->host.ctx, action);
+bool btk_ctx_is_action_pressed(btk_ctx* ctx, btk_action action) {
+    return ctx->host.is_action_pressed(ctx->host.ctx, action);
 }
 
 char* btk_ctx_read_data(btk_ctx* ctx, btk_data data, int* out_len) {

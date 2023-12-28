@@ -17,7 +17,7 @@ GodotSim::GodotSim() : sim(nullptr) {
     host.free = GodotSim::_godot_free;
     host.panic = GodotSim::_godot_panic;
     host.log = GodotSim::_godot_log;
-    host.is_action_active = GodotSim::_godot_is_action_active;
+    host.is_action_pressed = GodotSim::_godot_is_action_pressed;
     host.read_data = GodotSim::_godot_read_data;
     host.read_cfg = GodotSim::_godot_read_cfg;
     host.ctx = this;
@@ -52,6 +52,13 @@ void GodotSim::update_info() {
     btk_sim_vec player_vel = btk_sim_get_player_vel(sim);
     info["player_vel"] = Vector2(player_vel.x, player_vel.y);
     info["player_is_grounded"] = btk_sim_get_player_is_grounded(sim);
+
+    Dictionary event = info["event_player_landed"];
+    event["count"] = 1;
+    
+    Dictionary event_data;
+    event_data["frame"] = 2;
+    event_data["custom"] = "blah";
 }
 
 Dictionary GodotSim::get_cfg() const {
@@ -86,7 +93,7 @@ void GodotSim::_godot_log(void* ctx, char* msg) {
     UtilityFunctions::print(msg);
 }
 
-bool GodotSim::_godot_is_action_active(void* ctx, btk_action action) {
+bool GodotSim::_godot_is_action_pressed(void* ctx, btk_action action) {
     const char* input_action_to_string[] = {
         "move_left",    // BTK_ACTION_MOVE_LEFT
         "move_right",   // BTK_ACTION_MOVE_RIGHT
@@ -110,20 +117,20 @@ char* GodotSim::_godot_read_data(void* ctx, btk_data data, int* out_len) {
 void GodotSim::_godot_read_cfg(void* ctx, btk_cfg* cfg) {
     GodotSim* godot_sim = static_cast<GodotSim*>(ctx);
 
-    Vector2 accel = godot_sim->cfg["accel"];
+    Vector2 accel = godot_sim->cfg["player_accel"];
     cfg->player_accel.x = accel.x;
     cfg->player_accel.y = accel.y;
 
-    Vector2 vel_min = godot_sim->cfg["vel min"];
+    Vector2 vel_min = godot_sim->cfg["player_vel_min"];
     cfg->player_vel_min.x = vel_min.x;
     cfg->player_vel_min.y = vel_min.y;
 
-    Vector2 vel_max = godot_sim->cfg["vel max"];
+    Vector2 vel_max = godot_sim->cfg["player_vel_max"];
     cfg->player_vel_max.x = vel_max.x;
     cfg->player_vel_max.y = vel_max.y;
 
-    cfg->player_vel_damp_x = godot_sim->cfg["vel damp x"];
-    cfg->player_jump_release_vel_y = godot_sim->cfg["jump release vel y"];
-    cfg->player_gravity = godot_sim->cfg["gravity"];
-    cfg->player_max_jump_timer = godot_sim->cfg["max jump timer"];
+    cfg->player_vel_damp_x = godot_sim->cfg["player_vel_damp_x"];
+    cfg->player_jump_release_vel_y = godot_sim->cfg["player_jump_release_vel_y"];
+    cfg->player_gravity = godot_sim->cfg["player_gravity"];
+    cfg->player_max_jump_timer = godot_sim->cfg["player_max_jump_timer"];
 }

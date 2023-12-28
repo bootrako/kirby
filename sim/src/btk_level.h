@@ -14,7 +14,7 @@ typedef struct btk_level_t {
 typedef struct btk_level_collision_t {
     btk_vec pos;
     btk_vec normal;
-    bool collided;
+    bool did_collide;
 } btk_level_collision;
 
 void btk_level_init(btk_ctx* ctx, btk_level* level);

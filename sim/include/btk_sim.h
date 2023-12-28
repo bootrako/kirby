@@ -7,6 +7,11 @@ extern "C" {
 
 #include <stdbool.h>
 
+typedef struct btk_sim_vec_t {
+    float x;
+    float y;
+} btk_sim_vec;
+
 typedef enum btk_action_t {
     BTK_ACTION_MOVE_LEFT,
     BTK_ACTION_MOVE_RIGHT,
@@ -21,11 +26,6 @@ typedef enum btk_data_t {
     BTK_DATA_GREEN_GREENS,
     BTK_DATA_COUNT,
 } btk_data;
-
-typedef struct btk_sim_vec_t {
-    float x;
-    float y;
-} btk_sim_vec;
 
 typedef struct btk_cfg_t {
     btk_sim_vec player_accel;
@@ -42,7 +42,7 @@ typedef struct btk_host_t {
     void(*free)(void* ctx, void* ptr);                                  // free allocated memory
     void(*panic)(void* ctx, char* err_msg);                             // crash with an error message
     void(*log)(void* ctx, char* msg);                                   // prints message to output
-    bool(*is_action_active)(void* ctx, btk_action action);              // returns true if the action is currently being activated
+    bool(*is_action_pressed)(void* ctx, btk_action action);              // returns true if the action is currently being activated
     char*(*read_data)(void* ctx, btk_data data, int* out_len);          // opens the specified data file and returns the contents
     void(*read_cfg)(void* ctx, btk_cfg* cfg);                           // reads the current state of dynamic config
     void* ctx;                                                          // context object for storing host data

@@ -17,18 +17,18 @@ void btk_player_init(btk_ctx* ctx, btk_player* player, btk_input* input) {
 
 void btk_player_update(btk_ctx* ctx, btk_player* player) {
     btk_vec accel = (btk_vec){ .x = 0.0f, .y = 0.0f };
-    if (btk_input_active(ctx, player->input, BTK_ACTION_MOVE_LEFT)) {
+    if (btk_input_pressed(ctx, player->input, BTK_ACTION_MOVE_LEFT)) {
         accel.x -= ctx->cfg.player_accel.x * BTK_DT;
     }
-    if (btk_input_active(ctx, player->input, BTK_ACTION_MOVE_RIGHT)) {
+    if (btk_input_pressed(ctx, player->input, BTK_ACTION_MOVE_RIGHT)) {
         accel.x += ctx->cfg.player_accel.x * BTK_DT;
     }
-    if (btk_input_active(ctx, player->input, BTK_ACTION_JUMP) && (player->is_grounded || player->is_jumping)) {
+    if (btk_input_pressed(ctx, player->input, BTK_ACTION_JUMP) && (player->is_grounded || player->is_jumping)) {
         accel.y -= ctx->cfg.player_accel.y * BTK_DT;
         player->is_jumping = true;
         player->jump_timer += BTK_DT;
     }
-    if ((btk_input_just_inactive(ctx, player->input, BTK_ACTION_JUMP) || player->jump_timer > ctx->cfg.player_max_jump_timer) && player->is_jumping) {
+    if ((btk_input_just_released(ctx, player->input, BTK_ACTION_JUMP) || player->jump_timer > ctx->cfg.player_max_jump_timer) && player->is_jumping) {
         accel.y = 0.0f;
         player->is_jumping = false;
         player->vel.y = ctx->cfg.player_jump_release_vel_y * BTK_DT;
@@ -56,9 +56,8 @@ void btk_player_update(btk_ctx* ctx, btk_player* player) {
     player->xform.y = collision.pos.y;
 
     bool was_grounded = player->is_grounded;
-    player->is_grounded = collision.collided && collision.normal.y == -1.0f;
-    bool just_landed = player->is_grounded && !was_grounded;
-    if (just_landed) {
+    player->is_grounded = collision.did_collide && collision.normal.y == -1.0f;
+    if (player->is_grounded && !was_grounded) {
         player->jump_timer = 0.0f;
     }
 }

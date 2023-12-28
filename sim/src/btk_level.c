@@ -124,12 +124,12 @@ static bool btk_level_collide_y(btk_ctx* ctx, btk_level* level, btk_rect xform, 
 }
 
 btk_level_collision btk_level_collide(btk_ctx* ctx, btk_level* level, btk_rect xform, btk_vec desired) {
-    btk_level_collision collision = { .pos = desired, .normal = BTK_VEC_ZERO, .collided = false };
+    btk_level_collision collision = { .pos = desired, .normal = BTK_VEC_ZERO, .did_collide = false };
     if (desired.x != xform.x) {
-        collision.collided |= btk_level_collide_x(ctx, level, xform, desired.x, &collision.pos.x, &collision.normal.x);
+        collision.did_collide |= btk_level_collide_x(ctx, level, xform, desired.x, &collision.pos.x, &collision.normal.x);
     }
     if (desired.y != xform.y) {
-        collision.collided |= btk_level_collide_y(ctx, level, xform, desired.y, &collision.pos.y, &collision.normal.y);
+        collision.did_collide |= btk_level_collide_y(ctx, level, xform, desired.y, &collision.pos.y, &collision.normal.y);
     }
     return collision;
 }

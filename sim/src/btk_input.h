@@ -12,8 +12,8 @@ typedef struct btk_input_t {
 void btk_input_init(btk_ctx* ctx, btk_input* input);
 void btk_input_update(btk_ctx* ctx, btk_input* input);
 
-bool btk_input_active(btk_ctx* ctx, btk_input* input, btk_action action);
-bool btk_input_just_active(btk_ctx* ctx, btk_input* input, btk_action action);
-bool btk_input_just_inactive(btk_ctx* ctx, btk_input* input, btk_action action);
+bool btk_input_pressed(btk_ctx* ctx, btk_input* input, btk_action action);
+bool btk_input_just_pressed(btk_ctx* ctx, btk_input* input, btk_action action);
+bool btk_input_just_released(btk_ctx* ctx, btk_input* input, btk_action action);
 
 #endif // BTK_INPUT_H

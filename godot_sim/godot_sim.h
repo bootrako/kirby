@@ -29,7 +29,7 @@ private:
     static void _godot_free(void* ctx, void* ptr);
     static void _godot_panic(void* ctx, char* err_msg);
     static void _godot_log(void* ctx, char* msg);
-    static bool _godot_is_action_active(void* ctx, btk_action action);
+    static bool _godot_is_action_pressed(void* ctx, btk_action action);
     static char* _godot_read_data(void* ctx, btk_data data, int* out_len);
     static void _godot_read_cfg(void* ctx, btk_cfg* cfg);
 
