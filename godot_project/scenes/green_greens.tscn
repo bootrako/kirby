@@ -9,10 +9,12 @@
 [node name="sim" type="GodotSim" parent="."]
 cfg = {
 "accel": Vector2(5, 100),
-"gravity": 8.0,
-"max jump timer": 0.3,
+"gravity": 6.0,
+"jump release vel y": -70.0,
+"max jump timer": 0.2,
 "vel damp x": 2.0,
-"vel max": Vector2(70, 120)
+"vel max": Vector2(70, 80),
+"vel min": Vector2(-70, -175)
 }
 
 [node name="map" type="TileMap" parent="."]
@@ -34,7 +36,7 @@ layer_1/tile_data = PackedInt32Array(393216, 65536, 0, 393217, 65536, 0, 393218,
 position = Vector2(32, 80)
 sprite_frames = ExtResource("2_h50eg")
 animation = &"run"
-frame_progress = 0.212193
+frame_progress = 0.421791
 centered = false
 script = ExtResource("3_wuesq")
 sim = NodePath("../sim")

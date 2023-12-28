@@ -114,11 +114,16 @@ void GodotSim::_godot_read_cfg(void* ctx, btk_cfg* cfg) {
     cfg->player_accel.x = accel.x;
     cfg->player_accel.y = accel.y;
 
+    Vector2 vel_min = godot_sim->cfg["vel min"];
+    cfg->player_vel_min.x = vel_min.x;
+    cfg->player_vel_min.y = vel_min.y;
+
     Vector2 vel_max = godot_sim->cfg["vel max"];
     cfg->player_vel_max.x = vel_max.x;
     cfg->player_vel_max.y = vel_max.y;
 
     cfg->player_vel_damp_x = godot_sim->cfg["vel damp x"];
+    cfg->player_jump_release_vel_y = godot_sim->cfg["jump release vel y"];
     cfg->player_gravity = godot_sim->cfg["gravity"];
     cfg->player_max_jump_timer = godot_sim->cfg["max jump timer"];
 }

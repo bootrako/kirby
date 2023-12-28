@@ -29,8 +29,10 @@ typedef struct btk_sim_vec_t {
 
 typedef struct btk_cfg_t {
     btk_sim_vec player_accel;
+    btk_sim_vec player_vel_min;
     btk_sim_vec player_vel_max;
     float player_vel_damp_x;
+    float player_jump_release_vel_y;
     float player_gravity;
     float player_max_jump_timer;
 } btk_cfg;

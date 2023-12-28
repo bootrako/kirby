@@ -28,11 +28,10 @@ void btk_player_update(btk_ctx* ctx, btk_player* player) {
         player->is_jumping = true;
         player->jump_timer += BTK_DT;
     }
-    if ((btk_input_just_inactive(ctx, player->input, BTK_ACTION_JUMP) && player->is_jumping) || player->jump_timer > ctx->cfg.player_max_jump_timer) {
+    if ((btk_input_just_inactive(ctx, player->input, BTK_ACTION_JUMP) || player->jump_timer > ctx->cfg.player_max_jump_timer) && player->is_jumping) {
+        accel.y = 0.0f;
         player->is_jumping = false;
-    }
-    if (!player->is_jumping) {
-        accel.y += ctx->cfg.player_gravity * BTK_DT;
+        player->vel.y = ctx->cfg.player_jump_release_vel_y * BTK_DT;
     }
 
     player->vel = btk_vec_add(player->vel, accel);
@@ -45,8 +44,11 @@ void btk_player_update(btk_ctx* ctx, btk_player* player) {
             player->vel.x += vel_damp * -btk_signf(player->vel.x);
         }
     }
-    player->vel.x = btk_clampf(player->vel.x, -ctx->cfg.player_vel_max.x * BTK_DT, ctx->cfg.player_vel_max.x * BTK_DT);
-    player->vel.y = btk_clampf(player->vel.y, -ctx->cfg.player_vel_max.y * BTK_DT, ctx->cfg.player_vel_max.y * BTK_DT);
+    if (!player->is_jumping) {
+        player->vel.y += ctx->cfg.player_gravity * BTK_DT;
+    }
+    player->vel.x = btk_clampf(player->vel.x, ctx->cfg.player_vel_min.x * BTK_DT, ctx->cfg.player_vel_max.x * BTK_DT);
+    player->vel.y = btk_clampf(player->vel.y, ctx->cfg.player_vel_min.y * BTK_DT, ctx->cfg.player_vel_max.y * BTK_DT);
 
     btk_vec desired = btk_vec_add((btk_vec){ .x = player->xform.x, .y = player->xform.y }, player->vel);
     btk_level_collision collision = btk_level_collide(ctx, player->level, player->xform, desired);
