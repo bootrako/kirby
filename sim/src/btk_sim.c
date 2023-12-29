@@ -11,7 +11,8 @@ struct btk_sim_t {
     btk_input input;
     btk_level level;
     btk_player player;
-    btk_events events_since_last_update;
+    btk_events events_since_last_update[BTK_SIM_MAX_FRAMES_PER_UPDATE];
+    int frames_since_last_update;
     float frame_accumulator;
 };
 
@@ -39,17 +40,21 @@ void btk_sim_deinit(btk_sim* sim) {
 }
 
 void btk_sim_update(btk_sim* sim, float delta_time) {
-    btk_events_init(&sim->ctx, &sim->events_since_last_update);
+    int update_frame = 0;
 
-    sim->frame_accumulator += btk_minf(delta_time, BTK_SIM_MAX_FRAMES_PER_UPDATE * BTK_DT);
-    while (sim->frame_accumulator > BTK_DT) {
+    sim->frame_accumulator = btk_minf(sim->frame_accumulator + delta_time, BTK_SIM_MAX_FRAMES_PER_UPDATE * BTK_DT);
+    while (sim->frame_accumulator > BTK_DT && update_frame < BTK_SIM_MAX_FRAMES_PER_UPDATE) {
         btk_ctx_update(&sim->ctx);
         btk_input_update(&sim->ctx, &sim->input);
         btk_player_update(&sim->ctx, &sim->player); 
 
-        btk_events_merge(&sim->ctx, &sim->events_since_last_update, &sim->ctx.events);
+        sim->events_since_last_update[update_frame] = sim->ctx.events;
         sim->frame_accumulator -= BTK_DT;
+
+        update_frame++;
     }
+
+    sim->frames_since_last_update = update_frame;
 }
 
 btk_sim_vec btk_sim_get_player_pos(btk_sim* sim) {
@@ -65,5 +70,9 @@ bool btk_sim_get_player_is_grounded(btk_sim* sim) {
 }
 
 int btk_sim_get_event_player_landed(btk_sim* sim) {
-    return sim->events_since_last_update.player_landed_count;
+    int player_landed_count = 0;
+    for (int i = 0; i < sim->frames_since_last_update; ++i) {
+        player_landed_count += sim->events_since_last_update[i].player_landed_count;
+    }
+    return player_landed_count;
 }
