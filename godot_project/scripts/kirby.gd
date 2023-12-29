@@ -21,6 +21,9 @@ func _process(_delta: float):
             _play_anim("idle")
     else:
         _play_anim("fall")
+        
+    if info["event_player_landed"]["count"] > 0:
+        print("landed!")
 
 func _play_anim(anim_name: StringName):
     if animation != anim_name:

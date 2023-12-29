@@ -33,7 +33,7 @@ layer_1/navigation_enabled = false
 layer_1/tile_data = PackedInt32Array(393216, 65536, 0, 393217, 65536, 0, 393218, 65536, 0, 393219, 65536, 0, 393220, 65536, 0, 393221, 65536, 0, 393222, 65536, 0, 393223, 65536, 0, 393224, 65536, 0, 393225, 65536, 0)
 
 [node name="kirby" type="AnimatedSprite2D" parent="." node_paths=PackedStringArray("sim")]
-position = Vector2(32, 80)
+position = Vector2(32, 48)
 sprite_frames = ExtResource("2_h50eg")
 animation = &"run"
 frame_progress = 0.421791

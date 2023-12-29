@@ -58,6 +58,7 @@ void btk_player_update(btk_ctx* ctx, btk_player* player) {
     bool was_grounded = player->is_grounded;
     player->is_grounded = collision.did_collide && collision.normal.y == -1.0f;
     if (player->is_grounded && !was_grounded) {
+        btk_events_send_player_landed(ctx, &ctx->events);
         player->jump_timer = 0.0f;
     }
 }

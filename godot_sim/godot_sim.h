@@ -24,6 +24,7 @@ protected:
 private:
     void update_info();
     void set_cfg(Dictionary cfg);
+    Dictionary get_event(const StringName& event_name);
 
     static void* _godot_alloc(void* ctx, int size);
     static void _godot_free(void* ctx, void* ptr);

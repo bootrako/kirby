@@ -11,6 +11,7 @@ struct btk_sim_t {
     btk_input input;
     btk_level level;
     btk_player player;
+    btk_events events_since_last_update;
     float frame_accumulator;
 };
 
@@ -34,15 +35,19 @@ btk_sim* btk_sim_init(btk_host host) {
 
 void btk_sim_deinit(btk_sim* sim) {
     btk_level_deinit(&sim->ctx, &sim->level);
-    btk_ctx_free(&sim->ctx, sim);
+    sim->ctx.host.free(sim->ctx.host.ctx, sim);
 }
 
 void btk_sim_update(btk_sim* sim, float delta_time) {
+    btk_events_init(&sim->ctx, &sim->events_since_last_update);
+
     sim->frame_accumulator += btk_minf(delta_time, BTK_SIM_MAX_FRAMES_PER_UPDATE * BTK_DT);
     while (sim->frame_accumulator > BTK_DT) {
         btk_ctx_update(&sim->ctx);
         btk_input_update(&sim->ctx, &sim->input);
         btk_player_update(&sim->ctx, &sim->player); 
+
+        btk_events_merge(&sim->ctx, &sim->events_since_last_update, &sim->ctx.events);
         sim->frame_accumulator -= BTK_DT;
     }
 }
@@ -57,4 +62,8 @@ btk_sim_vec btk_sim_get_player_vel(btk_sim* sim) {
 
 bool btk_sim_get_player_is_grounded(btk_sim* sim) {
     return sim->player.is_grounded;
+}
+
+int btk_sim_get_event_player_landed(btk_sim* sim) {
+    return sim->events_since_last_update.player_landed_count;
 }

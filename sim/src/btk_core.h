@@ -10,7 +10,7 @@
 #define BTK_SWAP(T, a, b) { T swap_tmp = a; a = b; b = swap_tmp; }
 
 #ifndef NDEBUG
-#define BTK_ASSERT(ctx, expr) { if (!(expr)) btk_ctx_panic(ctx, "assertion failed: " #expr); }
+#define BTK_ASSERT(ctx, expr) { if (!(expr)) ctx->host.panic(ctx->host.ctx, "assertion failed: " #expr); }
 #else
 #define BTK_ASSERT(ctx, expr)
 #endif

@@ -53,12 +53,8 @@ void GodotSim::update_info() {
     info["player_vel"] = Vector2(player_vel.x, player_vel.y);
     info["player_is_grounded"] = btk_sim_get_player_is_grounded(sim);
 
-    Dictionary event = info["event_player_landed"];
-    event["count"] = 1;
-    
-    Dictionary event_data;
-    event_data["frame"] = 2;
-    event_data["custom"] = "blah";
+    Dictionary event_player_landed = get_event("event_player_landed");
+    event_player_landed["count"] = btk_sim_get_event_player_landed(sim);
 }
 
 Dictionary GodotSim::get_cfg() const {
@@ -68,6 +64,13 @@ Dictionary GodotSim::get_cfg() const {
 void GodotSim::set_cfg(Dictionary cfg) {
     this->cfg = cfg;
 }
+
+ Dictionary GodotSim::get_event(const StringName& event_name) {
+    if (!info.has(event_name)) {
+        info[event_name] = Dictionary();
+    }
+    return info[event_name];
+ }
 
 void GodotSim::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_info"), &GodotSim::get_info);

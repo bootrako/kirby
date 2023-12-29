@@ -20,7 +20,7 @@ char* btk_read_line(btk_ctx* ctx, btk_read* read, int* out_line_len) {
     }
 
     if (read->pos >= read->size) {
-        btk_ctx_panic(ctx, "read_line reached EOF!");
+        ctx->host.panic(ctx->host.ctx, "read_line reached EOF!");
     }
 
     char* line = read->str + read->pos; 
@@ -56,7 +56,7 @@ int btk_read_int(btk_ctx* ctx, btk_read* read) {
     int res = 0;
     for (int i = 0; i < line_len; ++i) {
         if (line[i] < '0' || line[i] > '9') {
-            btk_ctx_panic(ctx, "read_int invalid character!");
+            ctx->host.panic(ctx->host.ctx, "read_int invalid character!");
         }
 
         int prv_res = res;
@@ -64,7 +64,7 @@ int btk_read_int(btk_ctx* ctx, btk_read* read) {
 
         // check for overflow
         if (res < prv_res) {
-            btk_ctx_panic(ctx, "read_int overflow!");
+            ctx->host.panic(ctx->host.ctx, "read_int overflow!");
         }
     }
 
