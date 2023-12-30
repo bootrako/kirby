@@ -23,9 +23,11 @@ void btk_player_update(btk_ctx* ctx, btk_player* player) {
     if (btk_input_pressed(ctx, player->input, BTK_ACTION_MOVE_RIGHT)) {
         accel.x += ctx->cfg.player_accel.x * BTK_DT;
     }
-    if (btk_input_pressed(ctx, player->input, BTK_ACTION_JUMP) && (player->is_grounded || player->is_jumping)) {
-        accel.y -= ctx->cfg.player_accel.y * BTK_DT;
+    if (btk_input_just_pressed(ctx, player->input, BTK_ACTION_JUMP) && player->is_grounded) {
         player->is_jumping = true;
+    }
+    if (btk_input_pressed(ctx, player->input, BTK_ACTION_JUMP) && player->is_jumping) {
+        accel.y -= ctx->cfg.player_accel.y * BTK_DT;
         player->jump_timer += BTK_DT;
     }
     if ((btk_input_just_released(ctx, player->input, BTK_ACTION_JUMP) || player->jump_timer > ctx->cfg.player_max_jump_timer) && player->is_jumping) {

@@ -1,5 +1,5 @@
-#ifndef btk_eventsS_H
-#define btk_eventsS_H
+#ifndef BTK_EVENTS_H
+#define BTK_EVENTS_H
 
 #include "btk_core.h"
 
@@ -13,4 +13,4 @@ void btk_events_init(btk_ctx* ctx, btk_events* event);
 
 void btk_events_send_player_landed(btk_ctx* ctx, btk_events* event);
 
-#endif // btk_eventsS_H
+#endif // BTK_EVENTS_H
