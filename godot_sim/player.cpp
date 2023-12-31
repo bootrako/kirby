@@ -36,23 +36,24 @@ void Player::_process(double delta) {
         set_flip_h(false);
     }
 
+    bool was_falling = is_falling;
     is_running = false;
     is_falling = false;
-    bool is_grounded = btk_sim_get_player_is_grounded(sim);
-    if (is_grounded) {
+    if (btk_sim_get_player_is_grounded(sim)) {
         btk_vec vel = btk_sim_get_player_vel(sim);
         is_running = Math::absf(vel.x) > run_anim_vel;
     } else {
         is_falling = true;
     }
 
+    bool is_splat_v = was_falling && !is_falling;
     is_splat_h = false;
     btk_event_player_collided_level* player_collided_level = nullptr;
     while (btk_sim_get_event_player_collided_level(sim, &player_collided_level)) {
         is_splat_h |= player_collided_level->normal.x != 0.0f && Math::absf(player_collided_level->vel.x) > splat_h_vel;
     }
 
-    if (is_splat_h) {
+    if (is_splat_h || is_splat_v) {
         CPUParticles2D* small_star = get_node<CPUParticles2D>(small_star_path);
         small_star->set_emitting(true);
     }
