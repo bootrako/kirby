@@ -158,6 +158,7 @@ advance_expression = "is_splat_h"
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_kc1dh"]
 switch_mode = 2
 advance_mode = 2
+advance_expression = "!is_splat_h"
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_lk4fg"]
 states/End/position = Vector2(656, 128)
@@ -195,15 +196,13 @@ layer_1/y_sort_enabled = false
 layer_1/y_sort_origin = 0
 layer_1/z_index = 0
 layer_1/navigation_enabled = false
-layer_1/tile_data = PackedInt32Array(393216, 65536, 0, 393217, 65536, 0, 393218, 65536, 0, 393219, 65536, 0, 393220, 65536, 0, 393221, 65536, 0, 393222, 65536, 0, 393223, 65536, 0, 393224, 65536, 0, 393225, 65536, 0)
+layer_1/tile_data = PackedInt32Array(393216, 65536, 0, 393217, 65536, 0, 393218, 65536, 0, 393219, 65536, 0, 393220, 65536, 0, 393221, 65536, 0, 393222, 65536, 0, 393224, 65536, 0, 393225, 65536, 0, 327686, 65536, 0, 393223, 65536, 0)
 
 [node name="player" type="Player" parent="."]
 sim = NodePath("../sim")
+anim_tree = NodePath("anim_tree")
 run_anim_vel = 0.1
 splat_h_vel = 1.0
-is_running = false
-is_falling = false
-is_splat_h = false
 position = Vector2(32, 48)
 texture = ExtResource("2_1rp8d")
 centered = false

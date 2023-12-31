@@ -1,5 +1,7 @@
 #include "player.h"
 #include "sim.h"
+#include <godot_cpp/classes/animation_tree.hpp>
+#include <godot_cpp/classes/animation_node_state_machine_playback.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/input.hpp>
 
@@ -20,7 +22,7 @@ void Player::_process(double delta) {
         return;
     }
 
-    btk_sim* sim = get_node<Sim>(sim_node_path)->get_sim();
+    btk_sim* sim = get_node<Sim>(sim_path)->get_sim();
 
     btk_vec pos = btk_sim_get_player_pos(sim);
     set_position(Vector2(pos.x, pos.y));
@@ -48,12 +50,24 @@ void Player::_process(double delta) {
     while (btk_sim_get_event_player_collided_level(sim, &player_collided_level)) {
         is_splat_h |= player_collided_level->normal.x != 0.0f && Math::absf(player_collided_level->vel.x) > splat_h_vel;
     }
+
+    AnimationTree* anim_tree = get_node<AnimationTree>(anim_tree_path);
+    AnimationNodeStateMachinePlayback* state_machine_playback = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/playback"));
+    if (state_machine_playback->get_current_node() == StringName("splat_h")) {
+        set_offset(Vector2(is_flipped_h() ? -4.0f : 4.0f, 0.0f));
+    } else {
+        set_offset(Vector2(0.0f, 0.0f));
+    }
 }
 
 void Player::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("get_sim_node_path"), &Player::get_sim_node_path);
-    ClassDB::bind_method(D_METHOD("set_sim_node_path", "sim_node_path"), &Player::set_sim_node_path);
-    ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "sim", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Sim"), "set_sim_node_path", "get_sim_node_path");
+    ClassDB::bind_method(D_METHOD("get_sim_path"), &Player::get_sim_path);
+    ClassDB::bind_method(D_METHOD("set_sim_path", "sim_path"), &Player::set_sim_path);
+    ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "sim", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Sim"), "set_sim_path", "get_sim_path");
+
+    ClassDB::bind_method(D_METHOD("get_anim_tree_path"), &Player::get_anim_tree_path);
+    ClassDB::bind_method(D_METHOD("set_anim_tree_path", "anim_tree_path"), &Player::set_anim_tree_path);
+    ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "anim_tree", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "AnimationTree"), "set_anim_tree_path", "get_anim_tree_path");
 
     ClassDB::bind_method(D_METHOD("get_run_anim_vel"), &Player::get_run_anim_vel);
     ClassDB::bind_method(D_METHOD("set_run_anim_vel", "run_anim_vel"), &Player::set_run_anim_vel);
@@ -76,12 +90,20 @@ void Player::_bind_methods() {
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_splat_h", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_STORAGE), "set_is_splat_h", "get_is_splat_h");
 }
 
-NodePath Player::get_sim_node_path() const {
-    return sim_node_path;
+NodePath Player::get_sim_path() const {
+    return sim_path;
 }
 
-void Player::set_sim_node_path(const NodePath& sim_node_path) {
-    this->sim_node_path = sim_node_path;
+void Player::set_sim_path(const NodePath& sim_path) {
+    this->sim_path = sim_path;
+}
+
+NodePath Player::get_anim_tree_path() const {
+    return anim_tree_path;
+}
+
+void Player::set_anim_tree_path(const NodePath& anim_tree_path) {
+    this->anim_tree_path = anim_tree_path;
 }
 
 float Player::get_run_anim_vel() const {

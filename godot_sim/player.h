@@ -15,8 +15,11 @@ namespace godot {
         static void _bind_methods();
     
     private:
-        NodePath get_sim_node_path() const;
-        void set_sim_node_path(const NodePath& sim_node_path);
+        NodePath get_sim_path() const;
+        void set_sim_path(const NodePath& sim_path);
+
+        NodePath get_anim_tree_path() const;
+        void set_anim_tree_path(const NodePath& anim_tree_path);
 
         float get_run_anim_vel() const;
         void set_run_anim_vel(float run_anim_vel);
@@ -33,7 +36,8 @@ namespace godot {
         bool get_is_splat_h() const;
         void set_is_splat_h(bool is_splat_h);
 
-        NodePath sim_node_path;
+        NodePath sim_path;
+        NodePath anim_tree_path;
         float run_anim_vel;
         float splat_h_vel;
         bool is_running;
