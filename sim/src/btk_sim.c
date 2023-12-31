@@ -68,22 +68,24 @@ bool btk_sim_get_player_is_grounded(btk_sim* sim) {
     return sim->player.is_grounded;
 }
 
-#define BTK_SIM_FIND_NEXT_EVENT(sim, prv, event_struct, event_bool) \
+#define BTK_SIM_FIND_NEXT_EVENT(sim, ptr, data_field, bool_field) \
     ptrdiff_t index = 0; \
-    if (prv != NULL) { \
-        btk_events* events = (btk_events*)((char*)prv - offsetof(btk_events, event_struct)); \
+    if (*ptr != NULL) { \
+        btk_events* events = (btk_events*)((char*)*ptr - offsetof(btk_events, data_field)); \
         index = (events - sim->events_since_last_update) + 1; \
     } \
     if (index >= 0) { \
-        while (index < BTK_SIM_MAX_FRAMES_PER_UPDATE) { \
-            if (sim->events_since_last_update[index].event_bool) { \
-                return &sim->events_since_last_update[index].event_struct; \
+        while (index < sim->frames_since_last_update) { \
+            if (sim->events_since_last_update[index].bool_field) { \
+                *ptr = &sim->events_since_last_update[index].data_field; \
+                return true; \
             } \
             index++; \
         } \
     } \
-    return NULL
+    *ptr = NULL; \
+    return false
 
-btk_event_player_collided_level* btk_sim_get_event_player_collided_level(btk_sim* sim, btk_event_player_collided_level* prv) {
-    BTK_SIM_FIND_NEXT_EVENT(sim, prv, player_collided_level, sent_player_collided_level);
+bool btk_sim_get_event_player_collided_level(btk_sim* sim, btk_event_player_collided_level** out_event_data) {
+    BTK_SIM_FIND_NEXT_EVENT(sim, out_event_data, player_collided_level, sent_player_collided_level);
 }

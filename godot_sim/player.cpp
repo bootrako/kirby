@@ -12,6 +12,7 @@ void Player::_ready() {
 
     is_running = false;
     is_falling = false;
+    is_splat_h = false;
 }
 
 void Player::_process(double delta) {
@@ -41,6 +42,12 @@ void Player::_process(double delta) {
     } else {
         is_falling = true;
     }
+
+    is_splat_h = false;
+    btk_event_player_collided_level* player_collided_level = nullptr;
+    while (btk_sim_get_event_player_collided_level(sim, &player_collided_level)) {
+        is_splat_h |= player_collided_level->normal.x != 0.0f && Math::absf(player_collided_level->vel.x) > splat_h_vel;
+    }
 }
 
 void Player::_bind_methods() {
@@ -52,6 +59,10 @@ void Player::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_run_anim_vel", "run_anim_vel"), &Player::set_run_anim_vel);
     ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "run_anim_vel"), "set_run_anim_vel", "get_run_anim_vel");
 
+    ClassDB::bind_method(D_METHOD("get_splat_h_vel"), &Player::get_splat_h_vel);
+    ClassDB::bind_method(D_METHOD("set_splat_h_vel", "splat_h_vel"), &Player::set_splat_h_vel);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "splat_h_vel"), "set_splat_h_vel", "get_splat_h_vel");
+
     ClassDB::bind_method(D_METHOD("get_is_running"), &Player::get_is_running);
     ClassDB::bind_method(D_METHOD("set_is_running", "is_running"), &Player::set_is_running);
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_running", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_STORAGE), "set_is_running", "get_is_running");
@@ -59,6 +70,10 @@ void Player::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_is_falling"), &Player::get_is_falling);
     ClassDB::bind_method(D_METHOD("set_is_falling", "is_falling"), &Player::set_is_falling);
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_falling", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_STORAGE), "set_is_falling", "get_is_falling");
+
+    ClassDB::bind_method(D_METHOD("get_is_splat_h"), &Player::get_is_splat_h);
+    ClassDB::bind_method(D_METHOD("set_is_splat_h", "is_splat_h"), &Player::set_is_splat_h);
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_splat_h", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_STORAGE), "set_is_splat_h", "get_is_splat_h");
 }
 
 NodePath Player::get_sim_node_path() const {
@@ -77,6 +92,14 @@ void Player::set_run_anim_vel(float run_anim_vel) {
     this->run_anim_vel = run_anim_vel;
 }
 
+float Player::get_splat_h_vel() const {
+    return splat_h_vel;
+}
+
+void Player::set_splat_h_vel(float splat_h_vel) {
+    this->splat_h_vel = splat_h_vel;
+}
+
 bool Player::get_is_running() const {
     return is_running;
 }
@@ -91,4 +114,12 @@ bool Player::get_is_falling() const {
 
 void Player::set_is_falling(bool is_falling) {
     this->is_falling = is_falling;
+}
+
+bool Player::get_is_splat_h() const {
+    return is_splat_h;
+}
+
+void Player::set_is_splat_h(bool is_splat_h) {
+    this->is_splat_h = is_splat_h;
 }

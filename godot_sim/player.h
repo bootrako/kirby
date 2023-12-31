@@ -21,16 +21,24 @@ namespace godot {
         float get_run_anim_vel() const;
         void set_run_anim_vel(float run_anim_vel);
 
+        float get_splat_h_vel() const;
+        void set_splat_h_vel(float splat_h_vel);
+
         bool get_is_running() const;
         void set_is_running(bool is_running);
 
         bool get_is_falling() const;
         void set_is_falling(bool is_falling);
 
+        bool get_is_splat_h() const;
+        void set_is_splat_h(bool is_splat_h);
+
         NodePath sim_node_path;
         float run_anim_vel;
+        float splat_h_vel;
         bool is_running;
         bool is_falling;
+        bool is_splat_h;
     };   
 }
 

@@ -71,7 +71,7 @@ typedef struct btk_event_player_collided_level_t {
     btk_vec normal;
 } btk_event_player_collided_level;
 
-btk_event_player_collided_level* btk_sim_get_event_player_collided_level(btk_sim* sim, btk_event_player_collided_level* prv);
+bool btk_sim_get_event_player_collided_level(btk_sim* sim, btk_event_player_collided_level** out_event_data);
 
 #ifdef __cplusplus
 }

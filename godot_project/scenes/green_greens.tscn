@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://dep3tqdr7m3mv"]
+[gd_scene load_steps=26 format=3 uid="uid://dep3tqdr7m3mv"]
 
 [ext_resource type="Texture2D" uid="uid://jubqmr80omsx" path="res://sprites/kirby.png" id="2_1rp8d"]
 [ext_resource type="TileSet" uid="uid://bfccyc4tus0bl" path="res://tiles/green_greens.tres" id="2_ytr8y"]
@@ -53,6 +53,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_kcas5"]
 resource_name = "splat_h"
+length = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -144,7 +145,18 @@ states/splat_v/position = Vector2(483, 208)
 transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_210rp"), "idle", "fall", SubResource("AnimationNodeStateMachineTransition_ckyy8"), "idle", "run", SubResource("AnimationNodeStateMachineTransition_50jkc"), "run", "idle", SubResource("AnimationNodeStateMachineTransition_mugij"), "fall", "splat_v", SubResource("AnimationNodeStateMachineTransition_xh1cy"), "splat_v", "idle", SubResource("AnimationNodeStateMachineTransition_v8hmn"), "splat_v", "fall", SubResource("AnimationNodeStateMachineTransition_aypp1")]
 graph_offset = Vector2(-68.5178, 0)
 
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_kh0jr"]
+animation = &"splat_h"
+
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_t5kxn"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_b242a"]
+advance_mode = 2
+advance_expression = "is_splat_h"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_kc1dh"]
+switch_mode = 2
 advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_lk4fg"]
@@ -152,7 +164,9 @@ states/End/position = Vector2(656, 128)
 states/Start/position = Vector2(347, 128)
 states/move/node = SubResource("AnimationNodeStateMachine_e4ug0")
 states/move/position = Vector2(507.769, 128)
-transitions = ["Start", "move", SubResource("AnimationNodeStateMachineTransition_t5kxn")]
+states/splat_h/node = SubResource("AnimationNodeAnimation_kh0jr")
+states/splat_h/position = Vector2(507.769, 215)
+transitions = ["Start", "move", SubResource("AnimationNodeStateMachineTransition_t5kxn"), "move", "splat_h", SubResource("AnimationNodeStateMachineTransition_b242a"), "splat_h", "move", SubResource("AnimationNodeStateMachineTransition_kc1dh")]
 graph_offset = Vector2(-17.2306, 0)
 
 [node name="green_greens" type="Node"]
@@ -186,6 +200,10 @@ layer_1/tile_data = PackedInt32Array(393216, 65536, 0, 393217, 65536, 0, 393218,
 [node name="player" type="Player" parent="."]
 sim = NodePath("../sim")
 run_anim_vel = 0.1
+splat_h_vel = 1.0
+is_running = false
+is_falling = false
+is_splat_h = false
 position = Vector2(32, 48)
 texture = ExtResource("2_1rp8d")
 centered = false
