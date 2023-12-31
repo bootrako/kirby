@@ -11,11 +11,6 @@ int btk_clamp(int x, int min, int max);
 float btk_clampf(float x, float min, float max);
 int btk_signf(float x);
 
-typedef struct btk_vec_t {
-    float x;
-    float y;
-} btk_vec;
-
 btk_vec btk_vec_add(btk_vec a, btk_vec b);
 btk_vec btk_vec_mul(btk_vec a, btk_vec b);
 

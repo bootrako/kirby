@@ -7,10 +7,10 @@ extern "C" {
 
 #include <stdbool.h>
 
-typedef struct btk_sim_vec_t {
+typedef struct btk_vec_t {
     float x;
     float y;
-} btk_sim_vec;
+} btk_vec;
 
 typedef enum btk_action_t {
     BTK_ACTION_MOVE_LEFT,
@@ -28,9 +28,9 @@ typedef enum btk_data_t {
 } btk_data;
 
 typedef struct btk_cfg_t {
-    btk_sim_vec player_accel;
-    btk_sim_vec player_vel_min;
-    btk_sim_vec player_vel_max;
+    btk_vec player_accel;
+    btk_vec player_vel_min;
+    btk_vec player_vel_max;
     float player_vel_damp_x;
     float player_jump_release_vel_y;
     float player_gravity;
@@ -59,13 +59,19 @@ void btk_sim_deinit(btk_sim* sim);
 // performs sim frame updates based on the time passed since last update
 void btk_sim_update(btk_sim* sim, float delta_time);
 
-btk_sim_vec btk_sim_get_player_pos(btk_sim* sim);
+btk_vec btk_sim_get_player_pos(btk_sim* sim);
 
-btk_sim_vec btk_sim_get_player_vel(btk_sim* sim);
+btk_vec btk_sim_get_player_vel(btk_sim* sim);
 
 bool btk_sim_get_player_is_grounded(btk_sim* sim);
 
-int btk_sim_get_event_player_landed(btk_sim* sim);
+typedef struct btk_event_player_collided_level_t {
+    btk_vec vel;
+    btk_vec pos;
+    btk_vec normal;
+} btk_event_player_collided_level;
+
+btk_event_player_collided_level* btk_sim_get_event_player_collided_level(btk_sim* sim, btk_event_player_collided_level* prv);
 
 #ifdef __cplusplus
 }

@@ -12,7 +12,7 @@ typedef struct btk_input_t {
 void btk_input_init(btk_ctx* ctx, btk_input* input);
 void btk_input_update(btk_ctx* ctx, btk_input* input);
 
-bool btk_input_pressed(btk_ctx* ctx, btk_input* input, btk_action action);
+bool btk_input_is_pressed(btk_ctx* ctx, btk_input* input, btk_action action);
 bool btk_input_just_pressed(btk_ctx* ctx, btk_input* input, btk_action action);
 bool btk_input_just_released(btk_ctx* ctx, btk_input* input, btk_action action);
 

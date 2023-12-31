@@ -15,7 +15,7 @@ void btk_input_update(btk_ctx* ctx, btk_input* input) {
     }
 }
 
-bool btk_input_pressed(btk_ctx* ctx, btk_input* input, btk_action action) {
+bool btk_input_is_pressed(btk_ctx* ctx, btk_input* input, btk_action action) {
     return input->cur[action];
 }
 

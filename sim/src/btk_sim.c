@@ -1,4 +1,5 @@
 #include <btk_sim.h>
+#include "btk_events.h"
 #include "btk_input.h"
 #include "btk_level.h"
 #include "btk_math.h"
@@ -18,9 +19,6 @@ struct btk_sim_t {
 
 btk_sim* btk_sim_init(btk_host host) {
     btk_sim* sim = host.alloc(host.ctx, sizeof(btk_sim));
-    if (sim == NULL) {
-        host.panic(host.ctx, "failed to alloc sim!");
-    }
 
     btk_ctx_init(&sim->ctx, host);
     btk_input_init(&sim->ctx, &sim->input);
@@ -36,6 +34,7 @@ btk_sim* btk_sim_init(btk_host host) {
 
 void btk_sim_deinit(btk_sim* sim) {
     btk_level_deinit(&sim->ctx, &sim->level);
+    btk_ctx_deinit(&sim->ctx);
     sim->ctx.host.free(sim->ctx.host.ctx, sim);
 }
 
@@ -48,7 +47,7 @@ void btk_sim_update(btk_sim* sim, float delta_time) {
         btk_input_update(&sim->ctx, &sim->input);
         btk_player_update(&sim->ctx, &sim->player); 
 
-        sim->events_since_last_update[update_frame] = sim->ctx.events;
+        sim->events_since_last_update[update_frame] = *sim->ctx.events;
         sim->frame_accumulator -= BTK_DT;
 
         update_frame++;
@@ -57,22 +56,34 @@ void btk_sim_update(btk_sim* sim, float delta_time) {
     sim->frames_since_last_update = update_frame;
 }
 
-btk_sim_vec btk_sim_get_player_pos(btk_sim* sim) {
-    return (btk_sim_vec){ .x = sim->player.xform.x, .y = sim->player.xform.y };
+btk_vec btk_sim_get_player_pos(btk_sim* sim) {
+    return (btk_vec){ .x = sim->player.xform.x, .y = sim->player.xform.y };
 }
 
-btk_sim_vec btk_sim_get_player_vel(btk_sim* sim) {
-    return (btk_sim_vec){ .x = sim->player.vel.x, .y = sim->player.vel.y };
+btk_vec btk_sim_get_player_vel(btk_sim* sim) {
+    return sim->player.vel;
 }
 
 bool btk_sim_get_player_is_grounded(btk_sim* sim) {
     return sim->player.is_grounded;
 }
 
-int btk_sim_get_event_player_landed(btk_sim* sim) {
-    int player_landed_count = 0;
-    for (int i = 0; i < sim->frames_since_last_update; ++i) {
-        player_landed_count += sim->events_since_last_update[i].player_landed_count;
-    }
-    return player_landed_count;
+#define BTK_SIM_FIND_NEXT_EVENT(sim, prv, event_struct, event_bool) \
+    ptrdiff_t index = 0; \
+    if (prv != NULL) { \
+        btk_events* events = (btk_events*)((char*)prv - offsetof(btk_events, event_struct)); \
+        index = (events - sim->events_since_last_update) + 1; \
+    } \
+    if (index >= 0) { \
+        while (index < BTK_SIM_MAX_FRAMES_PER_UPDATE) { \
+            if (sim->events_since_last_update[index].event_bool) { \
+                return &sim->events_since_last_update[index].event_struct; \
+            } \
+            index++; \
+        } \
+    } \
+    return NULL
+
+btk_event_player_collided_level* btk_sim_get_event_player_collided_level(btk_sim* sim, btk_event_player_collided_level* prv) {
+    BTK_SIM_FIND_NEXT_EVENT(sim, prv, player_collided_level, sent_player_collided_level);
 }

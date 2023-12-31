@@ -1,8 +1,6 @@
 #include "register_types.h"
-#include "godot_sim.h"
-#include <gdextension_interface.h>
-#include <godot_cpp/core/class_db.hpp>
-#include <godot_cpp/core/defs.hpp>
+#include "sim.h"
+#include "player.h"
 
 using namespace godot;
 
@@ -11,7 +9,8 @@ void init_godot_sim_module(ModuleInitializationLevel p_level) {
         return;
     }
 
-    ClassDB::register_class<GodotSim>();
+    ClassDB::register_class<Sim>();
+    ClassDB::register_class<Player>();
 }
 
 void deinit_godot_sim_module(ModuleInitializationLevel p_level) {

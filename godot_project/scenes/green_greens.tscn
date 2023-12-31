@@ -1,8 +1,7 @@
-[gd_scene load_steps=24 format=3 uid="uid://dep3tqdr7m3mv"]
+[gd_scene load_steps=23 format=3 uid="uid://dep3tqdr7m3mv"]
 
 [ext_resource type="Texture2D" uid="uid://jubqmr80omsx" path="res://sprites/kirby.png" id="2_1rp8d"]
 [ext_resource type="TileSet" uid="uid://bfccyc4tus0bl" path="res://tiles/green_greens.tres" id="2_ytr8y"]
-[ext_resource type="Script" path="res://scripts/kirby.gd" id="3_wuesq"]
 
 [sub_resource type="Animation" id="Animation_n88fs"]
 resource_name = "fall"
@@ -158,7 +157,7 @@ graph_offset = Vector2(-17.2306, 0)
 
 [node name="green_greens" type="Node"]
 
-[node name="sim" type="GodotSim" parent="."]
+[node name="sim" type="Sim" parent="."]
 cfg = {
 "player_accel": Vector2(5, 100),
 "player_gravity": 6.0,
@@ -184,25 +183,24 @@ layer_1/z_index = 0
 layer_1/navigation_enabled = false
 layer_1/tile_data = PackedInt32Array(393216, 65536, 0, 393217, 65536, 0, 393218, 65536, 0, 393219, 65536, 0, 393220, 65536, 0, 393221, 65536, 0, 393222, 65536, 0, 393223, 65536, 0, 393224, 65536, 0, 393225, 65536, 0)
 
-[node name="kirby" type="Sprite2D" parent="." node_paths=PackedStringArray("sim")]
+[node name="player" type="Player" parent="."]
+sim = NodePath("../sim")
+run_anim_vel = 0.1
 position = Vector2(32, 48)
 texture = ExtResource("2_1rp8d")
 centered = false
 hframes = 4
 vframes = 2
-script = ExtResource("3_wuesq")
-sim = NodePath("../sim")
-run_anim_vel = 0.1
 
-[node name="anim_player" type="AnimationPlayer" parent="kirby"]
-libraries = {
-"": SubResource("AnimationLibrary_khwd1")
-}
-
-[node name="anim_tree" type="AnimationTree" parent="kirby"]
+[node name="anim_tree" type="AnimationTree" parent="player"]
 libraries = {
 "": SubResource("AnimationLibrary_khwd1")
 }
 tree_root = SubResource("AnimationNodeStateMachine_lk4fg")
 advance_expression_base_node = NodePath("..")
 anim_player = NodePath("../anim_player")
+
+[node name="anim_player" type="AnimationPlayer" parent="player"]
+libraries = {
+"": SubResource("AnimationLibrary_khwd1")
+}

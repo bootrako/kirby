@@ -1,4 +1,5 @@
 #include "btk_player.h"
+#include "btk_events.h"
 #include "btk_input.h"
 #include "btk_level.h"
 
@@ -17,16 +18,16 @@ void btk_player_init(btk_ctx* ctx, btk_player* player, btk_input* input) {
 
 void btk_player_update(btk_ctx* ctx, btk_player* player) {
     btk_vec accel = (btk_vec){ .x = 0.0f, .y = 0.0f };
-    if (btk_input_pressed(ctx, player->input, BTK_ACTION_MOVE_LEFT)) {
+    if (btk_input_is_pressed(ctx, player->input, BTK_ACTION_MOVE_LEFT)) {
         accel.x -= ctx->cfg.player_accel.x * BTK_DT;
     }
-    if (btk_input_pressed(ctx, player->input, BTK_ACTION_MOVE_RIGHT)) {
+    if (btk_input_is_pressed(ctx, player->input, BTK_ACTION_MOVE_RIGHT)) {
         accel.x += ctx->cfg.player_accel.x * BTK_DT;
     }
     if (btk_input_just_pressed(ctx, player->input, BTK_ACTION_JUMP) && player->is_grounded) {
         player->is_jumping = true;
     }
-    if (btk_input_pressed(ctx, player->input, BTK_ACTION_JUMP) && player->is_jumping) {
+    if (btk_input_is_pressed(ctx, player->input, BTK_ACTION_JUMP) && player->is_jumping) {
         accel.y -= ctx->cfg.player_accel.y * BTK_DT;
         player->jump_timer += BTK_DT;
     }
@@ -57,10 +58,21 @@ void btk_player_update(btk_ctx* ctx, btk_player* player) {
     player->xform.x = collision.pos.x;
     player->xform.y = collision.pos.y;
 
+    if (collision.did_collide) {
+        btk_event_player_collided_level player_collided_level;
+        player_collided_level.vel = player->vel;
+        player_collided_level.pos = collision.pos;
+        player_collided_level.normal = collision.normal;
+        btk_events_send_player_collided_level(ctx, ctx->events, &player_collided_level);    
+    }
+
+    if (collision.did_collide && collision.normal.x != 0.0f) {
+        player->vel.x = 0.0f;
+    }
+
     bool was_grounded = player->is_grounded;
     player->is_grounded = collision.did_collide && collision.normal.y == -1.0f;
     if (player->is_grounded && !was_grounded) {
-        btk_events_send_player_landed(ctx, &ctx->events);
         player->jump_timer = 0.0f;
     }
 }
