@@ -21,6 +21,9 @@ namespace godot {
         NodePath get_anim_tree_path() const;
         void set_anim_tree_path(const NodePath& anim_tree_path);
 
+        NodePath get_small_star_path() const;
+        void set_small_star_path(const NodePath& small_star_path);
+
         float get_run_anim_vel() const;
         void set_run_anim_vel(float run_anim_vel);
 
@@ -38,6 +41,7 @@ namespace godot {
 
         NodePath sim_path;
         NodePath anim_tree_path;
+        NodePath small_star_path;
         float run_anim_vel;
         float splat_h_vel;
         bool is_running;

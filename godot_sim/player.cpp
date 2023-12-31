@@ -2,6 +2,7 @@
 #include "sim.h"
 #include <godot_cpp/classes/animation_tree.hpp>
 #include <godot_cpp/classes/animation_node_state_machine_playback.hpp>
+#include <godot_cpp/classes/cpu_particles2d.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/input.hpp>
 
@@ -51,6 +52,11 @@ void Player::_process(double delta) {
         is_splat_h |= player_collided_level->normal.x != 0.0f && Math::absf(player_collided_level->vel.x) > splat_h_vel;
     }
 
+    if (is_splat_h) {
+        CPUParticles2D* small_star = get_node<CPUParticles2D>(small_star_path);
+        small_star->set_emitting(true);
+    }
+
     AnimationTree* anim_tree = get_node<AnimationTree>(anim_tree_path);
     AnimationNodeStateMachinePlayback* state_machine_playback = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/playback"));
     if (state_machine_playback->get_current_node() == StringName("splat_h")) {
@@ -69,6 +75,10 @@ void Player::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_anim_tree_path", "anim_tree_path"), &Player::set_anim_tree_path);
     ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "anim_tree", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "AnimationTree"), "set_anim_tree_path", "get_anim_tree_path");
 
+    ClassDB::bind_method(D_METHOD("get_small_star_path"), &Player::get_small_star_path);
+    ClassDB::bind_method(D_METHOD("set_small_star_path", "small_star_path"), &Player::set_small_star_path);
+    ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "small_star", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "CPUParticles2D"), "set_small_star_path", "get_small_star_path");
+
     ClassDB::bind_method(D_METHOD("get_run_anim_vel"), &Player::get_run_anim_vel);
     ClassDB::bind_method(D_METHOD("set_run_anim_vel", "run_anim_vel"), &Player::set_run_anim_vel);
     ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "run_anim_vel"), "set_run_anim_vel", "get_run_anim_vel");
@@ -79,15 +89,15 @@ void Player::_bind_methods() {
 
     ClassDB::bind_method(D_METHOD("get_is_running"), &Player::get_is_running);
     ClassDB::bind_method(D_METHOD("set_is_running", "is_running"), &Player::set_is_running);
-    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_running", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_STORAGE), "set_is_running", "get_is_running");
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_running", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_is_running", "get_is_running");
 
     ClassDB::bind_method(D_METHOD("get_is_falling"), &Player::get_is_falling);
     ClassDB::bind_method(D_METHOD("set_is_falling", "is_falling"), &Player::set_is_falling);
-    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_falling", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_STORAGE), "set_is_falling", "get_is_falling");
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_falling", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_is_falling", "get_is_falling");
 
     ClassDB::bind_method(D_METHOD("get_is_splat_h"), &Player::get_is_splat_h);
     ClassDB::bind_method(D_METHOD("set_is_splat_h", "is_splat_h"), &Player::set_is_splat_h);
-    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_splat_h", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_STORAGE), "set_is_splat_h", "get_is_splat_h");
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_splat_h", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_is_splat_h", "get_is_splat_h");
 }
 
 NodePath Player::get_sim_path() const {
@@ -104,6 +114,14 @@ NodePath Player::get_anim_tree_path() const {
 
 void Player::set_anim_tree_path(const NodePath& anim_tree_path) {
     this->anim_tree_path = anim_tree_path;
+}
+
+NodePath Player::get_small_star_path() const {
+    return small_star_path;
+}
+
+void Player::set_small_star_path(const NodePath& small_star_path) {
+    this->small_star_path = small_star_path;
 }
 
 float Player::get_run_anim_vel() const {
