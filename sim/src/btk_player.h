@@ -14,6 +14,7 @@ typedef struct btk_player_t {
     float jump_timer;
     bool is_jumping;
     bool is_grounded;
+    bool is_crouching;
 } btk_player;
 
 void btk_player_init(btk_ctx* ctx, btk_player* player, btk_input* input);

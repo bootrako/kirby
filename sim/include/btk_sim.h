@@ -65,6 +65,8 @@ btk_vec btk_sim_get_player_vel(btk_sim* sim);
 
 bool btk_sim_get_player_is_grounded(btk_sim* sim);
 
+bool btk_sim_get_player_is_crouching(btk_sim* sim);
+
 typedef struct btk_event_player_collided_level_t {
     btk_vec vel;
     btk_vec pos;

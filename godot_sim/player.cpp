@@ -15,6 +15,7 @@ void Player::_ready() {
 
     is_running = false;
     is_falling = false;
+    is_crouching = false;
     is_splat_h = false;
 }
 
@@ -28,11 +29,13 @@ void Player::_process(double delta) {
     btk_vec pos = btk_sim_get_player_pos(sim);
     set_position(Vector2(pos.x, pos.y));
 
+    is_crouching = btk_sim_get_player_is_crouching(sim);
+    
     Input* input = Input::get_singleton();
-    if (input->is_action_pressed("move_left") && !input->is_action_pressed("move_right")) {
+    if (input->is_action_pressed("move_left") && !input->is_action_pressed("move_right") && !is_crouching) {
         set_flip_h(true);
     }
-    if (input->is_action_pressed("move_right") && !input->is_action_pressed("move_left")) {
+    if (input->is_action_pressed("move_right") && !input->is_action_pressed("move_left") && !is_crouching) {
         set_flip_h(false);
     }
 
@@ -58,13 +61,17 @@ void Player::_process(double delta) {
         small_star->set_emitting(true);
     }
 
+    float offset_x = 0.0f;
+    float offset_y = 0.0f;
     AnimationTree* anim_tree = get_node<AnimationTree>(anim_tree_path);
     AnimationNodeStateMachinePlayback* state_machine_playback = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/playback"));
     if (state_machine_playback->get_current_node() == StringName("splat_h")) {
-        set_offset(Vector2(is_flipped_h() ? -4.0f : 4.0f, 0.0f));
-    } else {
-        set_offset(Vector2(0.0f, 0.0f));
+        offset_x = is_flipped_h() ? -4.0f : 4.0f;
     }
+    if (is_crouching) {
+        offset_y = -8.0f;
+    }
+    set_offset(Vector2(offset_x, offset_y));
 }
 
 void Player::_bind_methods() {
@@ -95,6 +102,10 @@ void Player::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_is_falling"), &Player::get_is_falling);
     ClassDB::bind_method(D_METHOD("set_is_falling", "is_falling"), &Player::set_is_falling);
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_falling", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_is_falling", "get_is_falling");
+
+    ClassDB::bind_method(D_METHOD("get_is_crouching"), &Player::get_is_crouching);
+    ClassDB::bind_method(D_METHOD("set_is_crouching", "is_crouching"), &Player::set_is_crouching);
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_crouching", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_is_crouching", "get_is_crouching");
 
     ClassDB::bind_method(D_METHOD("get_is_splat_h"), &Player::get_is_splat_h);
     ClassDB::bind_method(D_METHOD("set_is_splat_h", "is_splat_h"), &Player::set_is_splat_h);
@@ -156,6 +167,15 @@ bool Player::get_is_falling() const {
 void Player::set_is_falling(bool is_falling) {
     this->is_falling = is_falling;
 }
+
+bool Player::get_is_crouching() const {
+    return is_crouching;
+}
+
+void Player::set_is_crouching(bool is_crouching) {
+    this->is_crouching = is_crouching;
+}
+
 
 bool Player::get_is_splat_h() const {
     return is_splat_h;

@@ -68,6 +68,10 @@ bool btk_sim_get_player_is_grounded(btk_sim* sim) {
     return sim->player.is_grounded;
 }
 
+bool btk_sim_get_player_is_crouching(btk_sim* sim) {
+    return sim->player.is_crouching;
+}
+
 #define BTK_SIM_FIND_NEXT_EVENT(sim, ptr, data_field, bool_field) \
     ptrdiff_t index = 0; \
     if (*ptr != NULL) { \

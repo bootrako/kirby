@@ -19,6 +19,10 @@ bool btk_input_is_pressed(btk_ctx* ctx, btk_input* input, btk_action action) {
     return input->cur[action];
 }
 
+bool btk_input_is_released(btk_ctx* ctx, btk_input* input, btk_action action) {
+    return !input->cur[action];
+}
+
 bool btk_input_just_pressed(btk_ctx* ctx, btk_input* input, btk_action action) {
     return input->cur[action] && !input->prv[action];
 }

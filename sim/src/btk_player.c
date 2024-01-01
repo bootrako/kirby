@@ -5,6 +5,8 @@
 
 #define BTK_PLAYER_BASE_W 16
 #define BTK_PLAYER_BASE_H 16
+#define BTK_PLAYER_CROUCH_W 16
+#define BTK_PLAYER_CROUCH_H 8
 
 void btk_player_init(btk_ctx* ctx, btk_player* player, btk_input* input) {
     player->input = input;
@@ -14,27 +16,56 @@ void btk_player_init(btk_ctx* ctx, btk_player* player, btk_input* input) {
     player->jump_timer = 0.0f;
     player->is_jumping = false;
     player->is_grounded = false;
+    player->is_crouching = false;
+}
+
+static void btk_player_set_xform_w_h(btk_ctx* ctx, btk_player* player, float w, float h) {
+    player->xform.x += player->xform.w - w;
+    player->xform.y += player->xform.h - h;
+    player->xform.w = w;
+    player->xform.h = h;
 }
 
 void btk_player_update(btk_ctx* ctx, btk_player* player) {
     btk_vec accel = (btk_vec){ .x = 0.0f, .y = 0.0f };
-    if (btk_input_is_pressed(ctx, player->input, BTK_ACTION_MOVE_LEFT)) {
+
+    bool can_move = !player->is_crouching;
+    if (btk_input_is_pressed(ctx, player->input, BTK_ACTION_MOVE_LEFT) && can_move) {
         accel.x -= ctx->cfg.player_accel.x * BTK_DT;
     }
-    if (btk_input_is_pressed(ctx, player->input, BTK_ACTION_MOVE_RIGHT)) {
+    if (btk_input_is_pressed(ctx, player->input, BTK_ACTION_MOVE_RIGHT) && can_move) {
         accel.x += ctx->cfg.player_accel.x * BTK_DT;
     }
-    if (btk_input_just_pressed(ctx, player->input, BTK_ACTION_JUMP) && player->is_grounded) {
+
+    bool can_start_jumping = player->is_grounded && !player->is_crouching;
+    if (btk_input_just_pressed(ctx, player->input, BTK_ACTION_JUMP) && can_start_jumping) {
         player->is_jumping = true;
     }
-    if (btk_input_is_pressed(ctx, player->input, BTK_ACTION_JUMP) && player->is_jumping) {
+
+    bool can_keep_jumping = player->is_jumping;
+    if (btk_input_is_pressed(ctx, player->input, BTK_ACTION_JUMP) && can_keep_jumping) {
         accel.y -= ctx->cfg.player_accel.y * BTK_DT;
         player->jump_timer += BTK_DT;
     }
-    if ((btk_input_just_released(ctx, player->input, BTK_ACTION_JUMP) || player->jump_timer > ctx->cfg.player_max_jump_timer) && player->is_jumping) {
+
+    bool can_stop_jumping = player->is_jumping;
+    if ((btk_input_just_released(ctx, player->input, BTK_ACTION_JUMP) || player->jump_timer > ctx->cfg.player_max_jump_timer) && can_stop_jumping) {
         accel.y = 0.0f;
         player->is_jumping = false;
         player->vel.y = ctx->cfg.player_jump_release_vel_y * BTK_DT;
+    }
+
+    bool can_start_crouching = player->is_grounded;
+    if (btk_input_is_pressed(ctx, player->input, BTK_ACTION_CROUCH) && can_start_crouching) {
+        player->is_crouching = true;
+        btk_player_set_xform_w_h(ctx, player, BTK_PLAYER_CROUCH_W, BTK_PLAYER_CROUCH_H);
+        accel = (btk_vec){ .x = 0.0f, .y = 0.0f };
+    }
+
+    bool can_stop_crouching = player->is_crouching;
+    if ((btk_input_is_released(ctx, player->input, BTK_ACTION_CROUCH) || btk_input_is_pressed(ctx, player->input, BTK_ACTION_FLOAT)) && can_stop_crouching) {
+        player->is_crouching = false;
+        btk_player_set_xform_w_h(ctx, player, BTK_PLAYER_BASE_W, BTK_PLAYER_BASE_H);
     }
 
     player->vel = btk_vec_add(player->vel, accel);

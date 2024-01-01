@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://dep3tqdr7m3mv"]
+[gd_scene load_steps=33 format=3 uid="uid://dep3tqdr7m3mv"]
 
 [ext_resource type="Texture2D" uid="uid://jubqmr80omsx" path="res://sprites/kirby.png" id="2_1rp8d"]
 [ext_resource type="TileSet" uid="uid://bfccyc4tus0bl" path="res://tiles/green_greens.tres" id="2_ytr8y"]
@@ -21,7 +21,6 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_pqyin"]
 resource_name = "idle"
-loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -84,14 +83,33 @@ tracks/0/keys = {
 "values": [1]
 }
 
+[sub_resource type="Animation" id="Animation_2auoa"]
+resource_name = "crouch"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_khwd1"]
 _data = {
+"crouch": SubResource("Animation_2auoa"),
 "fall": SubResource("Animation_n88fs"),
 "idle": SubResource("Animation_pqyin"),
 "run": SubResource("Animation_e2c0i"),
 "splat_h": SubResource("Animation_kcas5"),
 "splat_v": SubResource("Animation_ku51p")
 }
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3a304"]
+animation = &"crouch"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_10tnt"]
 animation = &"fall"
@@ -132,9 +150,27 @@ advance_mode = 2
 advance_mode = 2
 advance_expression = "is_falling"
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_b40bs"]
+advance_mode = 2
+advance_expression = "is_crouching"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_dwbqj"]
+advance_mode = 2
+advance_expression = "is_crouching"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ru17j"]
+advance_mode = 2
+advance_expression = "!is_crouching && is_running"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_b5e45"]
+advance_mode = 2
+advance_expression = "!is_crouching && !is_running"
+
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_e4ug0"]
 states/End/position = Vector2(626, 100)
 states/Start/position = Vector2(207, 100)
+states/crouch/node = SubResource("AnimationNodeAnimation_3a304")
+states/crouch/position = Vector2(423.482, -6)
 states/fall/node = SubResource("AnimationNodeAnimation_10tnt")
 states/fall/position = Vector2(359, 208)
 states/idle/node = SubResource("AnimationNodeAnimation_46gqb")
@@ -143,8 +179,8 @@ states/run/node = SubResource("AnimationNodeAnimation_5uimq")
 states/run/position = Vector2(483, 100)
 states/splat_v/node = SubResource("AnimationNodeAnimation_y08ii")
 states/splat_v/position = Vector2(483, 208)
-transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_210rp"), "idle", "fall", SubResource("AnimationNodeStateMachineTransition_ckyy8"), "idle", "run", SubResource("AnimationNodeStateMachineTransition_50jkc"), "run", "idle", SubResource("AnimationNodeStateMachineTransition_mugij"), "fall", "splat_v", SubResource("AnimationNodeStateMachineTransition_xh1cy"), "splat_v", "idle", SubResource("AnimationNodeStateMachineTransition_v8hmn"), "splat_v", "fall", SubResource("AnimationNodeStateMachineTransition_aypp1")]
-graph_offset = Vector2(-68.5178, 0)
+transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_210rp"), "idle", "fall", SubResource("AnimationNodeStateMachineTransition_ckyy8"), "idle", "run", SubResource("AnimationNodeStateMachineTransition_50jkc"), "run", "idle", SubResource("AnimationNodeStateMachineTransition_mugij"), "fall", "splat_v", SubResource("AnimationNodeStateMachineTransition_xh1cy"), "splat_v", "idle", SubResource("AnimationNodeStateMachineTransition_v8hmn"), "splat_v", "fall", SubResource("AnimationNodeStateMachineTransition_aypp1"), "idle", "crouch", SubResource("AnimationNodeStateMachineTransition_b40bs"), "run", "crouch", SubResource("AnimationNodeStateMachineTransition_dwbqj"), "crouch", "run", SubResource("AnimationNodeStateMachineTransition_ru17j"), "crouch", "idle", SubResource("AnimationNodeStateMachineTransition_b5e45")]
+graph_offset = Vector2(-68.5178, -41.4344)
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_kh0jr"]
 animation = &"splat_h"
