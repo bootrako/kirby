@@ -14,9 +14,11 @@ void btk_player_init(btk_ctx* ctx, btk_player* player, btk_input* input) {
     player->xform = (btk_rect){ .x = 0.0f, .y = 0.0f, .w = BTK_PLAYER_BASE_W, .h = BTK_PLAYER_BASE_H };
     player->vel = (btk_vec){ .x = 0.0f, .y = 0.0f };
     player->jump_timer = 0.0f;
+    player->fall_timer = 0.0f;
     player->is_jumping = false;
     player->is_grounded = false;
     player->is_crouching = false;
+    player->is_dive_stunned = false;
 }
 
 static void btk_player_set_xform_w_h(btk_ctx* ctx, btk_player* player, float w, float h) {
@@ -29,7 +31,7 @@ static void btk_player_set_xform_w_h(btk_ctx* ctx, btk_player* player, float w, 
 void btk_player_update(btk_ctx* ctx, btk_player* player) {
     btk_vec accel = (btk_vec){ .x = 0.0f, .y = 0.0f };
 
-    bool can_move = !player->is_crouching;
+    bool can_move = !player->is_crouching && !player->is_dive_stunned;
     if (btk_input_is_pressed(ctx, player->input, BTK_ACTION_MOVE_LEFT) && can_move) {
         accel.x -= ctx->cfg.player_accel.x * BTK_DT;
     }
@@ -37,7 +39,7 @@ void btk_player_update(btk_ctx* ctx, btk_player* player) {
         accel.x += ctx->cfg.player_accel.x * BTK_DT;
     }
 
-    bool can_start_jumping = player->is_grounded && !player->is_crouching;
+    bool can_start_jumping = player->is_grounded && !player->is_crouching && !player->is_dive_stunned;
     if (btk_input_just_pressed(ctx, player->input, BTK_ACTION_JUMP) && can_start_jumping) {
         player->is_jumping = true;
     }
@@ -55,7 +57,7 @@ void btk_player_update(btk_ctx* ctx, btk_player* player) {
         player->vel.y = ctx->cfg.player_jump_release_vel_y * BTK_DT;
     }
 
-    bool can_start_crouching = player->is_grounded;
+    bool can_start_crouching = player->is_grounded && !player->is_dive_stunned;
     if (btk_input_is_pressed(ctx, player->input, BTK_ACTION_CROUCH) && can_start_crouching) {
         player->is_crouching = true;
         btk_player_set_xform_w_h(ctx, player, BTK_PLAYER_CROUCH_W, BTK_PLAYER_CROUCH_H);
@@ -70,7 +72,7 @@ void btk_player_update(btk_ctx* ctx, btk_player* player) {
 
     player->vel = btk_vec_add(player->vel, accel);
 
-    if (accel.x == 0.0f) {
+    if (accel.x == 0.0f && !player->is_dive_stunned) {
         float vel_damp = ctx->cfg.player_vel_damp_x * BTK_DT;
         if (player->vel.x > -vel_damp && player->vel.x < vel_damp) {
             player->vel.x = 0.0f;
@@ -97,14 +99,33 @@ void btk_player_update(btk_ctx* ctx, btk_player* player) {
         btk_events_send_player_collided_level(ctx, ctx->events, &player_collided_level);    
     }
 
-    if (collision.did_collide && collision.normal.x != 0.0f) {
-        player->vel.x = 0.0f;
+    if (collision.did_collide) {
+        if (collision.normal.x != 0.0f) {
+            player->vel.x = 0.0f;
+        }
+        if (collision.normal.y != 0.0f) {
+            player->vel.y = 0.0f;
+            player->is_jumping = false;
+        }
     }
 
     bool was_grounded = player->is_grounded;
     player->is_grounded = collision.did_collide && collision.normal.y == -1.0f;
     if (player->is_grounded && !was_grounded) {
+        if (player->is_dive_stunned) {
+            player->is_dive_stunned = false;
+        } else if (player->fall_timer > ctx->cfg.player_fall_dive_timer) {
+            player->vel.y = ctx->cfg.player_dive_bounce_vel_y * BTK_DT;
+            player->is_dive_stunned = true;
+        }
+
         player->jump_timer = 0.0f;
+        player->fall_timer = 0.0f;
+    }
+
+    bool is_falling = !player->is_grounded && !player->is_jumping;
+    if (is_falling) {
+        player->fall_timer += BTK_DT;
     }
 }
 

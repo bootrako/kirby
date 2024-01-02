@@ -56,6 +56,10 @@ void btk_sim_update(btk_sim* sim, float delta_time) {
     sim->frames_since_last_update = update_frame;
 }
 
+btk_cfg* btk_sim_get_cfg(btk_sim* sim) {
+    return &sim->ctx.cfg;
+}
+
 btk_vec btk_sim_get_player_pos(btk_sim* sim) {
     return (btk_vec){ .x = sim->player.xform.x, .y = sim->player.xform.y };
 }
@@ -64,12 +68,20 @@ btk_vec btk_sim_get_player_vel(btk_sim* sim) {
     return sim->player.vel;
 }
 
+float btk_sim_get_player_fall_timer(btk_sim* sim) {
+    return sim->player.fall_timer;
+}
+
 bool btk_sim_get_player_is_grounded(btk_sim* sim) {
     return sim->player.is_grounded;
 }
 
 bool btk_sim_get_player_is_crouching(btk_sim* sim) {
     return sim->player.is_crouching;
+}
+
+bool btk_sim_get_player_is_dive_stunned(btk_sim* sim) {
+    return sim->player.is_dive_stunned;
 }
 
 #define BTK_SIM_FIND_NEXT_EVENT(sim, ptr, data_field, bool_field) \

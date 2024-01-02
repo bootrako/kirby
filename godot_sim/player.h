@@ -36,11 +36,17 @@ namespace godot {
         bool get_is_falling() const;
         void set_is_falling(bool is_falling);
 
+        bool get_is_diving() const;
+        void set_is_diving(bool is_diving);
+
         bool get_is_crouching() const;
         void set_is_crouching(bool is_crouching);
 
         bool get_is_splat_h() const;
         void set_is_splat_h(bool is_splat_h);
+
+        bool get_is_splat_v() const;
+        void set_is_splat_v(bool is_splat_v);
 
         NodePath sim_path;
         NodePath anim_tree_path;
@@ -49,8 +55,10 @@ namespace godot {
         float splat_h_vel;
         bool is_running;
         bool is_falling;
+        bool is_diving;
         bool is_crouching;
         bool is_splat_h;
+        bool is_splat_v;
     };   
 }
 

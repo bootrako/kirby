@@ -43,18 +43,42 @@ btk_sim* Sim::get_sim() const {
      return sim;
 }
 
-Dictionary Sim::get_cfg() const {
-    return cfg;
-}
-
-void Sim::set_cfg(Dictionary cfg) {
-    this->cfg = cfg;
-}
-
 void Sim::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("get_cfg"), &Sim::get_cfg);
-    ClassDB::bind_method(D_METHOD("set_cfg", "cfg"), &Sim::set_cfg);
-    ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "cfg"), "set_cfg", "get_cfg");
+    ClassDB::bind_method(D_METHOD("get_player_accel"), &Sim::get_player_accel);
+    ClassDB::bind_method(D_METHOD("set_player_accel", "player_accel"), &Sim::set_player_accel);
+    ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "player_accel"), "set_player_accel", "get_player_accel");
+
+    ClassDB::bind_method(D_METHOD("get_player_vel_min"), &Sim::get_player_vel_min);
+    ClassDB::bind_method(D_METHOD("set_player_vel_min", "player_vel_min"), &Sim::set_player_vel_min);
+    ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "player_vel_min"), "set_player_vel_min", "get_player_vel_min");
+
+    ClassDB::bind_method(D_METHOD("get_player_vel_max"), &Sim::get_player_vel_max);
+    ClassDB::bind_method(D_METHOD("set_player_vel_max", "player_vel_max"), &Sim::set_player_vel_max);
+    ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "player_vel_max"), "set_player_vel_max", "get_player_vel_max");
+
+    ClassDB::bind_method(D_METHOD("get_player_vel_damp_x"), &Sim::get_player_vel_damp_x);
+    ClassDB::bind_method(D_METHOD("set_player_vel_damp_x", "player_vel_damp_x"), &Sim::set_player_vel_damp_x);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "player_vel_damp_x"), "set_player_vel_damp_x", "get_player_vel_damp_x");
+
+    ClassDB::bind_method(D_METHOD("get_player_jump_release_vel_y"), &Sim::get_player_jump_release_vel_y);
+    ClassDB::bind_method(D_METHOD("set_player_jump_release_vel_y", "player_jump_release_vel_y"), &Sim::set_player_jump_release_vel_y);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "player_jump_release_vel_y"), "set_player_jump_release_vel_y", "get_player_jump_release_vel_y");
+
+    ClassDB::bind_method(D_METHOD("get_player_gravity"), &Sim::get_player_gravity);
+    ClassDB::bind_method(D_METHOD("set_player_gravity", "player_gravity"), &Sim::set_player_gravity);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "player_gravity"), "set_player_gravity", "get_player_gravity");
+
+    ClassDB::bind_method(D_METHOD("get_player_max_jump_timer"), &Sim::get_player_max_jump_timer);
+    ClassDB::bind_method(D_METHOD("set_player_max_jump_timer", "player_max_jump_timer"), &Sim::set_player_max_jump_timer);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "player_max_jump_timer"), "set_player_max_jump_timer", "get_player_max_jump_timer");
+
+    ClassDB::bind_method(D_METHOD("get_player_fall_dive_timer"), &Sim::get_player_fall_dive_timer);
+    ClassDB::bind_method(D_METHOD("set_player_fall_dive_timer", "player_fall_dive_timer"), &Sim::set_player_fall_dive_timer);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "player_fall_dive_timer"), "set_player_fall_dive_timer", "get_player_fall_dive_timer");
+
+    ClassDB::bind_method(D_METHOD("get_player_dive_bounce_vel_y"), &Sim::get_player_dive_bounce_vel_y);
+    ClassDB::bind_method(D_METHOD("set_player_dive_bounce_vel_y", "player_dive_bounce_vel_y"), &Sim::set_player_dive_bounce_vel_y);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "player_dive_bounce_vel_y"), "set_player_dive_bounce_vel_y", "get_player_dive_bounce_vel_y");
 }
 
 void* Sim::_alloc(void* ctx, int size) {
@@ -96,21 +120,81 @@ char* Sim::_read_data(void* ctx, btk_data data, int* out_len) {
 
 void Sim::_read_cfg(void* ctx, btk_cfg* cfg) {
     Sim* godot_sim = static_cast<Sim*>(ctx);
+    *cfg = godot_sim->cfg;
+}
 
-    Vector2 accel = godot_sim->cfg["player_accel"];
-    cfg->player_accel.x = accel.x;
-    cfg->player_accel.y = accel.y;
 
-    Vector2 vel_min = godot_sim->cfg["player_vel_min"];
-    cfg->player_vel_min.x = vel_min.x;
-    cfg->player_vel_min.y = vel_min.y;
+Vector2 Sim::get_player_accel() const {
+    return Vector2(cfg.player_accel.x, cfg.player_accel.y);
+}
 
-    Vector2 vel_max = godot_sim->cfg["player_vel_max"];
-    cfg->player_vel_max.x = vel_max.x;
-    cfg->player_vel_max.y = vel_max.y;
+void Sim::set_player_accel(const Vector2& player_accel) {
+    cfg.player_accel.x = player_accel.x;
+    cfg.player_accel.y = player_accel.y;
+}
 
-    cfg->player_vel_damp_x = godot_sim->cfg["player_vel_damp_x"];
-    cfg->player_jump_release_vel_y = godot_sim->cfg["player_jump_release_vel_y"];
-    cfg->player_gravity = godot_sim->cfg["player_gravity"];
-    cfg->player_max_jump_timer = godot_sim->cfg["player_max_jump_timer"];
+Vector2 Sim::get_player_vel_min() const {
+    return Vector2(cfg.player_vel_min.x, cfg.player_vel_min.y);
+}
+
+void Sim::set_player_vel_min(const Vector2& player_vel_min) {
+    cfg.player_vel_min.x = player_vel_min.x;
+    cfg.player_vel_min.y = player_vel_min.y;
+}
+
+Vector2 Sim::get_player_vel_max() const {
+    return Vector2(cfg.player_vel_max.x, cfg.player_vel_max.y);
+}
+
+void Sim::set_player_vel_max(const Vector2& player_vel_max) {
+    cfg.player_vel_max.x = player_vel_max.x;
+    cfg.player_vel_max.y = player_vel_max.y;
+}
+
+float Sim::get_player_vel_damp_x() const {
+    return cfg.player_vel_damp_x;
+}
+
+void Sim::set_player_vel_damp_x(float player_vel_damp_x) {
+    cfg.player_vel_damp_x = player_vel_damp_x;
+}
+
+float Sim::get_player_jump_release_vel_y() const {
+    return cfg.player_jump_release_vel_y;
+}
+
+void Sim::set_player_jump_release_vel_y(float player_jump_release_vel_y) {
+    cfg.player_jump_release_vel_y = player_jump_release_vel_y;
+}
+
+float Sim::get_player_gravity() const {
+    return cfg.player_gravity;
+}
+
+void Sim::set_player_gravity(float player_gravity) {
+    cfg.player_gravity = player_gravity;
+}
+
+float Sim::get_player_max_jump_timer() const {
+    return cfg.player_max_jump_timer;
+}
+
+void Sim::set_player_max_jump_timer(float player_max_jump_timer) {
+    cfg.player_max_jump_timer = player_max_jump_timer;
+}
+
+float Sim::get_player_fall_dive_timer() const {
+    return cfg.player_fall_dive_timer;
+}
+
+void Sim::set_player_fall_dive_timer(float player_fall_dive_timer) {
+    cfg.player_fall_dive_timer = player_fall_dive_timer;
+}
+
+float Sim::get_player_dive_bounce_vel_y() const {
+    return cfg.player_dive_bounce_vel_y;
+}
+
+void Sim::set_player_dive_bounce_vel_y(float player_dive_bounce_vel_y) {
+    cfg.player_dive_bounce_vel_y = player_dive_bounce_vel_y;
 }

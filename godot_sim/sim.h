@@ -21,9 +21,6 @@ protected:
     static void _bind_methods();
 
 private:
-    Dictionary get_cfg() const;
-    void set_cfg(Dictionary cfg);
-
     static void* _alloc(void* ctx, int size);
     static void _free(void* ctx, void* ptr);
     static void _panic(void* ctx, char* err_msg);
@@ -32,7 +29,34 @@ private:
     static char* _read_data(void* ctx, btk_data data, int* out_len);
     static void _read_cfg(void* ctx, btk_cfg* cfg);
 
-    Dictionary cfg;
+    Vector2 get_player_accel() const;
+    void set_player_accel(const Vector2& player_accel);
+
+    Vector2 get_player_vel_min() const;
+    void set_player_vel_min(const Vector2& player_vel_min);
+
+    Vector2 get_player_vel_max() const;
+    void set_player_vel_max(const Vector2& player_vel_max);
+
+    float get_player_vel_damp_x() const;
+    void set_player_vel_damp_x(float player_vel_damp_x);
+
+    float get_player_jump_release_vel_y() const;
+    void set_player_jump_release_vel_y(float player_jump_release_vel_y);
+
+    float get_player_gravity() const;
+    void set_player_gravity(float player_gravity);
+
+    float get_player_max_jump_timer() const;
+    void set_player_max_jump_timer(float player_max_jump_timer);
+
+    float get_player_fall_dive_timer() const;
+    void set_player_fall_dive_timer(float player_fall_dive_timer);
+
+    float get_player_dive_bounce_vel_y() const;
+    void set_player_dive_bounce_vel_y(float player_dive_bounce_vel_y);
+
+    btk_cfg cfg;
     btk_sim* sim;
 };
 

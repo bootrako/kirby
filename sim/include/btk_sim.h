@@ -35,6 +35,8 @@ typedef struct btk_cfg_t {
     float player_jump_release_vel_y;
     float player_gravity;
     float player_max_jump_timer;
+    float player_fall_dive_timer;
+    float player_dive_bounce_vel_y;
 } btk_cfg;
 
 typedef struct btk_host_t {
@@ -59,13 +61,19 @@ void btk_sim_deinit(btk_sim* sim);
 // performs sim frame updates based on the time passed since last update
 void btk_sim_update(btk_sim* sim, float delta_time);
 
+btk_cfg* btk_sim_get_cfg(btk_sim* sim);
+
 btk_vec btk_sim_get_player_pos(btk_sim* sim);
 
 btk_vec btk_sim_get_player_vel(btk_sim* sim);
 
+float btk_sim_get_player_fall_timer(btk_sim* sim);
+
 bool btk_sim_get_player_is_grounded(btk_sim* sim);
 
 bool btk_sim_get_player_is_crouching(btk_sim* sim);
+
+bool btk_sim_get_player_is_dive_stunned(btk_sim* sim);
 
 typedef struct btk_event_player_collided_level_t {
     btk_vec vel;

@@ -12,9 +12,11 @@ typedef struct btk_player_t {
     btk_rect xform;
     btk_vec vel;
     float jump_timer;
+    float fall_timer;
     bool is_jumping;
     bool is_grounded;
     bool is_crouching;
+    bool is_dive_stunned;
 } btk_player;
 
 void btk_player_init(btk_ctx* ctx, btk_player* player, btk_input* input);

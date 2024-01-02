@@ -15,8 +15,10 @@ void Player::_ready() {
 
     is_running = false;
     is_falling = false;
+    is_diving = false;
     is_crouching = false;
     is_splat_h = false;
+    is_splat_v = false;
 }
 
 void Player::_process(double delta) {
@@ -25,6 +27,7 @@ void Player::_process(double delta) {
     }
 
     btk_sim* sim = get_node<Sim>(sim_path)->get_sim();
+    btk_cfg* cfg = btk_sim_get_cfg(sim);
 
     btk_vec pos = btk_sim_get_player_pos(sim);
     set_position(Vector2(pos.x, pos.y));
@@ -49,12 +52,16 @@ void Player::_process(double delta) {
         is_falling = true;
     }
 
-    bool is_splat_v = was_falling && !is_falling;
+    is_diving = (btk_sim_get_player_fall_timer(sim) > cfg->player_fall_dive_timer) || btk_sim_get_player_is_dive_stunned(sim);
+
+    is_splat_v = false;
     is_splat_h = false;
     btk_event_player_collided_level* player_collided_level = nullptr;
     while (btk_sim_get_event_player_collided_level(sim, &player_collided_level)) {
         is_splat_h |= player_collided_level->normal.x != 0.0f && Math::absf(player_collided_level->vel.x) > splat_h_vel;
+        is_splat_v |= player_collided_level->normal.y == 1.0f;
     }
+    is_splat_v |= was_falling && !is_falling;
 
     if (is_splat_h || is_splat_v) {
         CPUParticles2D* small_star = get_node<CPUParticles2D>(small_star_path);
@@ -64,9 +71,12 @@ void Player::_process(double delta) {
     float offset_x = 0.0f;
     float offset_y = 0.0f;
     AnimationTree* anim_tree = get_node<AnimationTree>(anim_tree_path);
-    AnimationNodeStateMachinePlayback* state_machine_playback = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/playback"));
-    if (state_machine_playback->get_current_node() == StringName("splat_h")) {
+    AnimationNodeStateMachinePlayback* state_machine_playback = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/small/playback"));
+    if (state_machine_playback->is_playing() && state_machine_playback->get_current_node() == StringName("splat_h")) {
         offset_x = is_flipped_h() ? -4.0f : 4.0f;
+    }
+    if (state_machine_playback->is_playing() && state_machine_playback->get_current_node() == StringName("splat_v") && is_falling) {
+        offset_y = -8.0f;
     }
     if (is_crouching) {
         offset_y = -8.0f;
@@ -103,6 +113,10 @@ void Player::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_is_falling", "is_falling"), &Player::set_is_falling);
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_falling", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_is_falling", "get_is_falling");
 
+    ClassDB::bind_method(D_METHOD("get_is_diving"), &Player::get_is_diving);
+    ClassDB::bind_method(D_METHOD("set_is_diving", "is_diving"), &Player::set_is_diving);
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_diving", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_is_diving", "get_is_diving");
+
     ClassDB::bind_method(D_METHOD("get_is_crouching"), &Player::get_is_crouching);
     ClassDB::bind_method(D_METHOD("set_is_crouching", "is_crouching"), &Player::set_is_crouching);
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_crouching", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_is_crouching", "get_is_crouching");
@@ -110,6 +124,10 @@ void Player::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_is_splat_h"), &Player::get_is_splat_h);
     ClassDB::bind_method(D_METHOD("set_is_splat_h", "is_splat_h"), &Player::set_is_splat_h);
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_splat_h", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_is_splat_h", "get_is_splat_h");
+
+    ClassDB::bind_method(D_METHOD("get_is_splat_v"), &Player::get_is_splat_v);
+    ClassDB::bind_method(D_METHOD("set_is_splat_v", "is_splat_v"), &Player::set_is_splat_v);
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_splat_v", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_is_splat_v", "get_is_splat_v");
 }
 
 NodePath Player::get_sim_path() const {
@@ -168,6 +186,14 @@ void Player::set_is_falling(bool is_falling) {
     this->is_falling = is_falling;
 }
 
+bool Player::get_is_diving() const {
+    return is_diving;
+}
+
+void Player::set_is_diving(bool is_diving) {
+    this->is_diving = is_diving;
+}
+
 bool Player::get_is_crouching() const {
     return is_crouching;
 }
@@ -176,11 +202,18 @@ void Player::set_is_crouching(bool is_crouching) {
     this->is_crouching = is_crouching;
 }
 
-
 bool Player::get_is_splat_h() const {
     return is_splat_h;
 }
 
 void Player::set_is_splat_h(bool is_splat_h) {
     this->is_splat_h = is_splat_h;
+}
+
+bool Player::get_is_splat_v() const {
+    return is_splat_v;
+}
+
+void Player::set_is_splat_v(bool is_splat_h) {
+    this->is_splat_v = is_splat_v;
 }
