@@ -8,7 +8,6 @@ namespace godot {
         GDCLASS(Player, Sprite2D)
 
     public:
-        void _ready();
         void _process(double delta);
 
     protected:
@@ -51,14 +50,14 @@ namespace godot {
         NodePath sim_path;
         NodePath anim_tree_path;
         NodePath small_star_path;
-        float run_anim_vel;
-        float splat_h_vel;
-        bool is_running;
-        bool is_falling;
-        bool is_diving;
-        bool is_crouching;
-        bool is_splat_h;
-        bool is_splat_v;
+        float run_anim_vel = false;
+        float splat_h_vel = false;
+        bool is_running = false;
+        bool is_falling = false;
+        bool is_diving = false;
+        bool is_crouching = false;
+        bool is_splat_h = false;
+        bool is_splat_v = false;
     };   
 }
 

@@ -8,19 +8,6 @@
 
 using namespace godot;
 
-void Player::_ready() {
-    if (Engine::get_singleton()->is_editor_hint()) {
-        return;
-    }
-
-    is_running = false;
-    is_falling = false;
-    is_diving = false;
-    is_crouching = false;
-    is_splat_h = false;
-    is_splat_v = false;
-}
-
 void Player::_process(double delta) {
     if (Engine::get_singleton()->is_editor_hint()) {
         return;
