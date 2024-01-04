@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://jubqmr80omsx" path="res://sprites/kirby.png" id="2_1rp8d"]
 [ext_resource type="TileSet" uid="uid://bfccyc4tus0bl" path="res://tiles/green_greens.tres" id="2_ytr8y"]
-[ext_resource type="Texture2D" uid="uid://cd1vp7m1u6u4i" path="res://sprites/small_star.png" id="3_p0u2b"]
+[ext_resource type="Texture2D" uid="uid://bhje68fptodet" path="res://sprites/small_star.tres" id="3_lxdlk"]
 
 [sub_resource type="Animation" id="Animation_2auoa"]
 resource_name = "crouch"
@@ -256,7 +256,7 @@ states/Start/position = Vector2(347, 128)
 states/small/node = SubResource("AnimationNodeStateMachine_e4ug0")
 states/small/position = Vector2(503.769, 127.704)
 transitions = ["Start", "small", SubResource("AnimationNodeStateMachineTransition_t5kxn")]
-graph_offset = Vector2(-417.231, 21)
+graph_offset = Vector2(-277.231, -100)
 
 [node name="green_greens" type="Node"]
 
@@ -298,6 +298,8 @@ texture = ExtResource("2_1rp8d")
 centered = false
 hframes = 4
 vframes = 2
+region_enabled = true
+region_rect = Rect2(0, 0, 64, 32)
 
 [node name="anim_tree" type="AnimationTree" parent="player"]
 libraries = {
@@ -318,7 +320,7 @@ emitting = false
 amount = 1
 lifetime = 0.4
 one_shot = true
-texture = ExtResource("3_p0u2b")
+texture = ExtResource("3_lxdlk")
 emission_shape = 5
 emission_points = PackedVector2Array(8, 0, -8, 0, 0, 8, 0, -8, 5.65, -5.65, 5.65, 5.65, -5.65, -5.65, -5.65, 5.65)
 emission_normals = PackedVector2Array(1, 0, -1, 0, 0, 1, 0, -1, 0.707, -0.707, 0.707, 0.707, -0.707, -0.707, -0.707, 0.707)
