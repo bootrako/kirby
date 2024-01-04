@@ -39,7 +39,7 @@ void Player::_process(double delta) {
         is_falling = true;
     }
 
-    is_diving = (btk_sim_get_player_fall_timer(sim) > cfg->player_fall_dive_timer) || btk_sim_get_player_is_dive_stunned(sim);
+    is_diving = btk_sim_get_player_fall_timer(sim) > cfg->player_fall_dive_timer;
 
     is_splat_v = false;
     is_splat_h = false;
@@ -50,7 +50,10 @@ void Player::_process(double delta) {
     }
     is_splat_v |= was_falling && !is_falling;
 
-    if (is_splat_h || is_splat_v) {
+    bool was_dive_stunned = is_dive_stunned;
+    is_dive_stunned = btk_sim_get_player_is_dive_stunned(sim);
+
+    if ((is_splat_h || is_splat_v) && !was_dive_stunned) {
         CPUParticles2D* small_star = get_node<CPUParticles2D>(small_star_path);
         small_star->set_emitting(true);
     }
@@ -103,6 +106,10 @@ void Player::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_is_diving"), &Player::get_is_diving);
     ClassDB::bind_method(D_METHOD("set_is_diving", "is_diving"), &Player::set_is_diving);
     ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_diving", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_is_diving", "get_is_diving");
+
+    ClassDB::bind_method(D_METHOD("get_is_dive_stunned"), &Player::get_is_dive_stunned);
+    ClassDB::bind_method(D_METHOD("set_is_dive_stunned", "is_dive_stunned"), &Player::set_is_dive_stunned);
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "is_dive_stunned", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_is_dive_stunned", "get_is_dive_stunned");
 
     ClassDB::bind_method(D_METHOD("get_is_crouching"), &Player::get_is_crouching);
     ClassDB::bind_method(D_METHOD("set_is_crouching", "is_crouching"), &Player::set_is_crouching);
@@ -179,6 +186,14 @@ bool Player::get_is_diving() const {
 
 void Player::set_is_diving(bool is_diving) {
     this->is_diving = is_diving;
+}
+
+bool Player::get_is_dive_stunned() const {
+    return is_dive_stunned;
+}
+
+void Player::set_is_dive_stunned(bool is_dive_stunned) {
+    this->is_dive_stunned = is_dive_stunned;
 }
 
 bool Player::get_is_crouching() const {

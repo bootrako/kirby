@@ -47,6 +47,9 @@ private:
     float get_player_gravity() const;
     void set_player_gravity(float player_gravity);
 
+    float get_player_gravity_dive_stunned() const;
+    void set_player_gravity_dive_stunned(float player_gravity_dive_stunned);
+
     float get_player_max_jump_timer() const;
     void set_player_max_jump_timer(float player_max_jump_timer);
 

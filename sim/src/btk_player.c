@@ -81,7 +81,7 @@ void btk_player_update(btk_ctx* ctx, btk_player* player) {
         }
     }
     if (!player->is_jumping) {
-        player->vel.y += ctx->cfg.player_gravity * BTK_DT;
+        player->vel.y += (player->is_dive_stunned ? ctx->cfg.player_gravity_dive_stunned : ctx->cfg.player_gravity) * BTK_DT;
     }
     player->vel.x = btk_clampf(player->vel.x, ctx->cfg.player_vel_min.x * BTK_DT, ctx->cfg.player_vel_max.x * BTK_DT);
     player->vel.y = btk_clampf(player->vel.y, ctx->cfg.player_vel_min.y * BTK_DT, ctx->cfg.player_vel_max.y * BTK_DT);

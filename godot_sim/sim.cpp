@@ -68,6 +68,10 @@ void Sim::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_player_gravity", "player_gravity"), &Sim::set_player_gravity);
     ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "player_gravity"), "set_player_gravity", "get_player_gravity");
 
+    ClassDB::bind_method(D_METHOD("get_player_gravity_dive_stunned"), &Sim::get_player_gravity_dive_stunned);
+    ClassDB::bind_method(D_METHOD("set_player_gravity_dive_stunned", "player_gravity_dive_stunned"), &Sim::set_player_gravity_dive_stunned);
+    ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "player_gravity_dive_stunned"), "set_player_gravity_dive_stunned", "get_player_gravity_dive_stunned");
+
     ClassDB::bind_method(D_METHOD("get_player_max_jump_timer"), &Sim::get_player_max_jump_timer);
     ClassDB::bind_method(D_METHOD("set_player_max_jump_timer", "player_max_jump_timer"), &Sim::set_player_max_jump_timer);
     ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "player_max_jump_timer"), "set_player_max_jump_timer", "get_player_max_jump_timer");
@@ -173,6 +177,14 @@ float Sim::get_player_gravity() const {
 
 void Sim::set_player_gravity(float player_gravity) {
     cfg.player_gravity = player_gravity;
+}
+
+float Sim::get_player_gravity_dive_stunned() const {
+    return cfg.player_gravity_dive_stunned;
+}
+
+void Sim::set_player_gravity_dive_stunned(float player_gravity_dive_stunned) {
+    cfg.player_gravity_dive_stunned = player_gravity_dive_stunned;
 }
 
 float Sim::get_player_max_jump_timer() const {

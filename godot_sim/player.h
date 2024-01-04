@@ -38,6 +38,9 @@ namespace godot {
         bool get_is_diving() const;
         void set_is_diving(bool is_diving);
 
+        bool get_is_dive_stunned() const;
+        void set_is_dive_stunned(bool is_dive_stunned);
+
         bool get_is_crouching() const;
         void set_is_crouching(bool is_crouching);
 
@@ -58,6 +61,7 @@ namespace godot {
         bool is_crouching = false;
         bool is_splat_h = false;
         bool is_splat_v = false;
+        bool is_dive_stunned = false;
     };   
 }
 

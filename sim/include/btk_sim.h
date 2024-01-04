@@ -34,6 +34,7 @@ typedef struct btk_cfg_t {
     float player_vel_damp_x;
     float player_jump_release_vel_y;
     float player_gravity;
+    float player_gravity_dive_stunned;
     float player_max_jump_timer;
     float player_fall_dive_timer;
     float player_dive_bounce_vel_y;

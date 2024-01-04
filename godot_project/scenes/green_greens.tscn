@@ -198,7 +198,7 @@ advance_expression = "is_diving"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_gnncj"]
 advance_mode = 2
-advance_expression = "!is_diving"
+advance_expression = "!is_diving && !is_dive_stunned"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_3sdm4"]
 switch_mode = 2
@@ -245,7 +245,7 @@ states/splat_h/position = Vector2(491.129, -10.5295)
 states/splat_v/node = SubResource("AnimationNodeAnimation_y08ii")
 states/splat_v/position = Vector2(489.867, 191.63)
 transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_210rp"), "idle", "fall", SubResource("AnimationNodeStateMachineTransition_ckyy8"), "idle", "run", SubResource("AnimationNodeStateMachineTransition_50jkc"), "run", "idle", SubResource("AnimationNodeStateMachineTransition_mugij"), "idle", "crouch", SubResource("AnimationNodeStateMachineTransition_b40bs"), "run", "crouch", SubResource("AnimationNodeStateMachineTransition_dwbqj"), "crouch", "idle", SubResource("AnimationNodeStateMachineTransition_b5e45"), "fall", "dive", SubResource("AnimationNodeStateMachineTransition_vw4xf"), "dive", "dive_recover", SubResource("AnimationNodeStateMachineTransition_gnncj"), "dive_recover", "idle", SubResource("AnimationNodeStateMachineTransition_3sdm4"), "fall", "splat_v", SubResource("AnimationNodeStateMachineTransition_xh1cy"), "splat_v", "idle", SubResource("AnimationNodeStateMachineTransition_v8hmn"), "fall", "splat_h", SubResource("AnimationNodeStateMachineTransition_q22ed"), "run", "splat_h", SubResource("AnimationNodeStateMachineTransition_eiddi"), "splat_h", "idle", SubResource("AnimationNodeStateMachineTransition_evkc2")]
-graph_offset = Vector2(-464.518, -198.669)
+graph_offset = Vector2(-345.518, -192.669)
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_t5kxn"]
 advance_mode = 2
@@ -267,9 +267,10 @@ player_vel_max = Vector2(70, 120)
 player_vel_damp_x = 2.0
 player_jump_release_vel_y = -70.0
 player_gravity = 6.0
+player_gravity_dive_stunned = 15.0
 player_max_jump_timer = 0.2
 player_fall_dive_timer = 0.7
-player_dive_bounce_vel_y = -100.0
+player_dive_bounce_vel_y = -175.0
 
 [node name="map" type="TileMap" parent="."]
 tile_set = ExtResource("2_ytr8y")
