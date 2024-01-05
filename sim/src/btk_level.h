@@ -7,8 +7,7 @@ typedef struct btk_level_t {
     int width;
     int height;
     bool* collision;
-    float player_start_x;
-    float player_start_y;
+    btk_vec player_start_pos;
 } btk_level;
 
 typedef struct btk_level_collision_t {

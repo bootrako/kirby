@@ -12,15 +12,14 @@ float btk_clampf(float x, float min, float max);
 int btk_signf(float x);
 
 btk_vec btk_vec_add(btk_vec a, btk_vec b);
+btk_vec btk_vec_sub(btk_vec a, btk_vec b);
 btk_vec btk_vec_mul(btk_vec a, btk_vec b);
 
 #define BTK_VEC_ZERO (btk_vec){ .x = 0.0f, .y = 0.0f }
 
 typedef struct btk_rect_t {
-    float x;
-    float y;
-    float w;
-    float h;
+    btk_vec pos;
+    btk_vec size;
 } btk_rect;
 
 #endif // BTK_MATH_H

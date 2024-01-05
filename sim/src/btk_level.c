@@ -53,20 +53,20 @@ void btk_level_load(btk_ctx* ctx, btk_level* level, btk_data data) {
         }
     }
 
-    level->player_start_x = (float)(btk_read_int(ctx, &read) * BTK_LEVEL_TILE_WIDTH);
-    level->player_start_y = (float)(btk_read_int(ctx, &read) * BTK_LEVEL_TILE_HEIGHT);
+    level->player_start_pos.x = (float)(btk_read_int(ctx, &read) * BTK_LEVEL_TILE_WIDTH);
+    level->player_start_pos.y = (float)(btk_read_int(ctx, &read) * BTK_LEVEL_TILE_HEIGHT);
 }
 
 static bool btk_level_collide_x(btk_ctx* ctx, btk_level* level, btk_rect xform, float desired_x, float* out_pos_x, float* out_normal_x) {
-    bool moving_r = desired_x > xform.x;
+    bool moving_r = desired_x > xform.pos.x;
     int dir_x = moving_r ? 1 : -1;
-    int edge_offset_x = moving_r ? (int)xform.w : 0;
-    int cell_offset_x = moving_r ? (int)-xform.w : BTK_LEVEL_TILE_WIDTH;
+    int edge_offset_x = moving_r ? (int)xform.size.x : 0;
+    int cell_offset_x = moving_r ? (int)-xform.size.x : BTK_LEVEL_TILE_WIDTH;
 
-    int start_cell_x = (int)(xform.x + edge_offset_x) / BTK_LEVEL_TILE_WIDTH;
+    int start_cell_x = (int)(xform.pos.x + edge_offset_x) / BTK_LEVEL_TILE_WIDTH;
     int end_cell_x = ((int)(desired_x + edge_offset_x) / BTK_LEVEL_TILE_WIDTH) + dir_x;
-    int start_cell_y = (int)(xform.y) / BTK_LEVEL_TILE_HEIGHT;
-    int end_cell_y = (int)(xform.y + xform.h - 1) / BTK_LEVEL_TILE_HEIGHT;
+    int start_cell_y = (int)(xform.pos.y) / BTK_LEVEL_TILE_HEIGHT;
+    int end_cell_y = (int)(xform.pos.y + xform.size.y - 1) / BTK_LEVEL_TILE_HEIGHT;
 
     start_cell_x = btk_clamp(start_cell_x, 0, level->width - 1);
     end_cell_x = btk_clamp(end_cell_x, -1, level->width);
@@ -91,15 +91,15 @@ static bool btk_level_collide_x(btk_ctx* ctx, btk_level* level, btk_rect xform, 
 }
 
 static bool btk_level_collide_y(btk_ctx* ctx, btk_level* level, btk_rect xform, float desired_y, float* out_pos_y, float* out_normal_y) {
-    bool moving_d = desired_y > xform.y;
+    bool moving_d = desired_y > xform.pos.y;
     int dir_y = moving_d ? 1 : -1;
-    int edge_offset_y = moving_d ? (int)xform.h : 0;
-    int cell_offset_y = moving_d ? (int)-xform.h : BTK_LEVEL_TILE_HEIGHT;
+    int edge_offset_y = moving_d ? (int)xform.size.y : 0;
+    int cell_offset_y = moving_d ? (int)-xform.size.y : BTK_LEVEL_TILE_HEIGHT;
 
-    int start_cell_y = (int)(xform.y + edge_offset_y) / BTK_LEVEL_TILE_HEIGHT;
+    int start_cell_y = (int)(xform.pos.y + edge_offset_y) / BTK_LEVEL_TILE_HEIGHT;
     int end_cell_y = ((int)(desired_y + edge_offset_y) / BTK_LEVEL_TILE_HEIGHT) + dir_y;
-    int start_cell_x = (int)(xform.x) / BTK_LEVEL_TILE_WIDTH;
-    int end_cell_x = (int)(xform.x + xform.w - 1) / BTK_LEVEL_TILE_WIDTH;
+    int start_cell_x = (int)(xform.pos.x) / BTK_LEVEL_TILE_WIDTH;
+    int end_cell_x = (int)(xform.pos.x + xform.size.x - 1) / BTK_LEVEL_TILE_WIDTH;
 
     start_cell_y = btk_clamp(start_cell_y, 0, level->height - 1);
     end_cell_y = btk_clamp(end_cell_y, -1, level->height);
@@ -125,10 +125,10 @@ static bool btk_level_collide_y(btk_ctx* ctx, btk_level* level, btk_rect xform, 
 
 btk_level_collision btk_level_collide(btk_ctx* ctx, btk_level* level, btk_rect xform, btk_vec desired) {
     btk_level_collision collision = { .pos = desired, .normal = BTK_VEC_ZERO, .did_collide = false };
-    if (desired.x != xform.x) {
+    if (desired.x != xform.pos.x) {
         collision.did_collide |= btk_level_collide_x(ctx, level, xform, desired.x, &collision.pos.x, &collision.normal.x);
     }
-    if (desired.y != xform.y) {
+    if (desired.y != xform.pos.y) {
         collision.did_collide |= btk_level_collide_y(ctx, level, xform, desired.y, &collision.pos.y, &collision.normal.y);
     }
     return collision;

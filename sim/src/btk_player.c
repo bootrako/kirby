@@ -3,16 +3,14 @@
 #include "btk_input.h"
 #include "btk_level.h"
 
-#define BTK_PLAYER_BASE_W 16
-#define BTK_PLAYER_BASE_H 16
-#define BTK_PLAYER_CROUCH_W 16
-#define BTK_PLAYER_CROUCH_H 8
+#define BTK_PLAYER_SMALL_SIZE (btk_vec){ .x = 16, .y = 16 }
+#define BTK_PLAYER_CROUCH_SIZE (btk_vec){ .x = 16, .y = 8 }
 
 void btk_player_init(btk_ctx* ctx, btk_player* player, btk_input* input) {
     player->input = input;
     player->level = NULL;
-    player->xform = (btk_rect){ .x = 0.0f, .y = 0.0f, .w = BTK_PLAYER_BASE_W, .h = BTK_PLAYER_BASE_H };
-    player->vel = (btk_vec){ .x = 0.0f, .y = 0.0f };
+    player->xform = (btk_rect){ .pos = BTK_VEC_ZERO, .size = BTK_PLAYER_SMALL_SIZE };
+    player->vel = BTK_VEC_ZERO;
     player->jump_timer = 0.0f;
     player->fall_timer = 0.0f;
     player->is_jumping = false;
@@ -21,15 +19,13 @@ void btk_player_init(btk_ctx* ctx, btk_player* player, btk_input* input) {
     player->is_dive_stunned = false;
 }
 
-static void btk_player_set_xform_w_h(btk_ctx* ctx, btk_player* player, float w, float h) {
-    player->xform.x += player->xform.w - w;
-    player->xform.y += player->xform.h - h;
-    player->xform.w = w;
-    player->xform.h = h;
+static void btk_player_set_xform_size(btk_ctx* ctx, btk_player* player, btk_vec size) {
+    player->xform.pos = btk_vec_add(player->xform.pos, btk_vec_sub(player->xform.size, size));
+    player->xform.size = size;
 }
 
 void btk_player_update(btk_ctx* ctx, btk_player* player) {
-    btk_vec accel = (btk_vec){ .x = 0.0f, .y = 0.0f };
+    btk_vec accel = BTK_VEC_ZERO;
 
     bool can_move = !player->is_crouching && !player->is_dive_stunned;
     if (btk_input_is_pressed(ctx, player->input, BTK_ACTION_MOVE_LEFT) && can_move) {
@@ -60,14 +56,14 @@ void btk_player_update(btk_ctx* ctx, btk_player* player) {
     bool can_start_crouching = player->is_grounded && !player->is_dive_stunned;
     if (btk_input_is_pressed(ctx, player->input, BTK_ACTION_CROUCH) && can_start_crouching) {
         player->is_crouching = true;
-        btk_player_set_xform_w_h(ctx, player, BTK_PLAYER_CROUCH_W, BTK_PLAYER_CROUCH_H);
-        accel = (btk_vec){ .x = 0.0f, .y = 0.0f };
+        btk_player_set_xform_size(ctx, player, BTK_PLAYER_CROUCH_SIZE);
+        accel = BTK_VEC_ZERO;
     }
 
     bool can_stop_crouching = player->is_crouching;
     if ((btk_input_is_released(ctx, player->input, BTK_ACTION_CROUCH) || btk_input_is_pressed(ctx, player->input, BTK_ACTION_FLOAT)) && can_stop_crouching) {
         player->is_crouching = false;
-        btk_player_set_xform_w_h(ctx, player, BTK_PLAYER_BASE_W, BTK_PLAYER_BASE_H);
+        btk_player_set_xform_size(ctx, player, BTK_PLAYER_SMALL_SIZE);
     }
 
     player->vel = btk_vec_add(player->vel, accel);
@@ -86,10 +82,9 @@ void btk_player_update(btk_ctx* ctx, btk_player* player) {
     player->vel.x = btk_clampf(player->vel.x, ctx->cfg.player_vel_min.x * BTK_DT, ctx->cfg.player_vel_max.x * BTK_DT);
     player->vel.y = btk_clampf(player->vel.y, ctx->cfg.player_vel_min.y * BTK_DT, ctx->cfg.player_vel_max.y * BTK_DT);
 
-    btk_vec desired = btk_vec_add((btk_vec){ .x = player->xform.x, .y = player->xform.y }, player->vel);
+    btk_vec desired = btk_vec_add(player->xform.pos, player->vel);
     btk_level_collision collision = btk_level_collide(ctx, player->level, player->xform, desired);
-    player->xform.x = collision.pos.x;
-    player->xform.y = collision.pos.y;
+    player->xform.pos = collision.pos;
 
     if (collision.did_collide) {
         btk_event_player_collided_level player_collided_level;
@@ -131,6 +126,5 @@ void btk_player_update(btk_ctx* ctx, btk_player* player) {
 
 void btk_player_start_level(btk_ctx* ctx, btk_player* player, btk_level* level) {
     player->level = level;
-    player->xform.x = level->player_start_x;
-    player->xform.y = level->player_start_y;
+    player->xform.pos = level->player_start_pos;
 }
