@@ -5,6 +5,7 @@
 #include <godot_cpp/classes/cpu_particles2d.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/input.hpp>
+#include <godot_cpp/classes/sprite2d.hpp>
 
 using namespace godot;
 
@@ -15,18 +16,19 @@ void Player::_process(double delta) {
 
     btk_sim* sim = get_node<Sim>(sim_path)->get_sim();
     btk_cfg* cfg = btk_sim_get_cfg(sim);
+    Sprite2D* sprite = get_node<Sprite2D>(sprite_path);
 
     btk_vec pos = btk_sim_get_player_pos(sim);
-    set_position(Vector2(pos.x, pos.y));
+    sprite->set_position(Vector2(pos.x, pos.y));
 
     is_crouching = btk_sim_get_player_is_crouching(sim);
     
     Input* input = Input::get_singleton();
     if (input->is_action_pressed("move_left") && !input->is_action_pressed("move_right") && !is_crouching) {
-        set_flip_h(true);
+        sprite->set_flip_h(true);
     }
     if (input->is_action_pressed("move_right") && !input->is_action_pressed("move_left") && !is_crouching) {
-        set_flip_h(false);
+        sprite->set_flip_h(false);
     }
 
     bool was_falling = is_falling;
@@ -63,7 +65,7 @@ void Player::_process(double delta) {
     AnimationTree* anim_tree = get_node<AnimationTree>(anim_tree_path);
     AnimationNodeStateMachinePlayback* state_machine_playback = Object::cast_to<AnimationNodeStateMachinePlayback>(anim_tree->get("parameters/small/playback"));
     if (state_machine_playback->is_playing() && state_machine_playback->get_current_node() == StringName("splat_h")) {
-        offset_x = is_flipped_h() ? -4.0f : 4.0f;
+        offset_x = sprite->is_flipped_h() ? -4.0f : 4.0f;
     }
     if (state_machine_playback->is_playing() && state_machine_playback->get_current_node() == StringName("splat_v") && is_falling) {
         offset_y = -8.0f;
@@ -71,13 +73,22 @@ void Player::_process(double delta) {
     if (is_crouching) {
         offset_y = -8.0f;
     }
-    set_offset(Vector2(offset_x, offset_y));
+    // Ref<Texture2D> tex = sprite->get_texture();
+    // if (tex.is_valid()) {
+    //     offset_x += (16.0f - tex->get_width()) / 2.0f;
+    //     offset_y += 16.0f - tex->get_height();
+    // }
+    sprite->set_offset(Vector2(offset_x, offset_y));
 }
 
 void Player::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_sim_path"), &Player::get_sim_path);
     ClassDB::bind_method(D_METHOD("set_sim_path", "sim_path"), &Player::set_sim_path);
     ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "sim", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Sim"), "set_sim_path", "get_sim_path");
+
+    ClassDB::bind_method(D_METHOD("get_sprite_path"), &Player::get_sprite_path);
+    ClassDB::bind_method(D_METHOD("set_sprite_path", "sprite_path"), &Player::set_sprite_path);
+    ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "sprite", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Sprite2D"), "set_sprite_path", "get_sprite_path");
 
     ClassDB::bind_method(D_METHOD("get_anim_tree_path"), &Player::get_anim_tree_path);
     ClassDB::bind_method(D_METHOD("set_anim_tree_path", "anim_tree_path"), &Player::set_anim_tree_path);
@@ -130,6 +141,14 @@ NodePath Player::get_sim_path() const {
 
 void Player::set_sim_path(const NodePath& sim_path) {
     this->sim_path = sim_path;
+}
+
+NodePath Player::get_sprite_path() const {
+    return sprite_path;
+}
+
+void Player::set_sprite_path(const NodePath& sprite_path) {
+    this->sprite_path = sprite_path;
 }
 
 NodePath Player::get_anim_tree_path() const {

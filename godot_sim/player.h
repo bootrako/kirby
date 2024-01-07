@@ -1,11 +1,11 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <godot_cpp/classes/sprite2d.hpp>
+#include <godot_cpp/classes/node.hpp>
 
 namespace godot {
-    class Player : public Sprite2D {
-        GDCLASS(Player, Sprite2D)
+    class Player : public Node {
+        GDCLASS(Player, Node)
 
     public:
         void _process(double delta);
@@ -16,6 +16,9 @@ namespace godot {
     private:
         NodePath get_sim_path() const;
         void set_sim_path(const NodePath& sim_path);
+
+        NodePath get_sprite_path() const;
+        void set_sprite_path(const NodePath& sprite_path);
 
         NodePath get_anim_tree_path() const;
         void set_anim_tree_path(const NodePath& anim_tree_path);
@@ -51,6 +54,7 @@ namespace godot {
         void set_is_splat_v(bool is_splat_v);
 
         NodePath sim_path;
+        NodePath sprite_path;
         NodePath anim_tree_path;
         NodePath small_star_path;
         float run_anim_vel = false;

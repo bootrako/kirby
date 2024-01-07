@@ -1,0 +1,8 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3 uid="uid://bip1xfst14quq"]
+
+[ext_resource type="Texture2D" uid="uid://crenwghodmfbs" path="res://textures/t_kirby_sprite.png" id="1_7ngnk"]
+
+[resource]
+atlas = ExtResource("1_7ngnk")
+region = Rect2(37, 37, 8, 8)
+filter_clip = true

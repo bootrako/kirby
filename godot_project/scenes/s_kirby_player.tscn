@@ -1,0 +1,307 @@
+[gd_scene load_steps=39 format=3 uid="uid://cepkygrhkwbx"]
+
+[ext_resource type="PackedScene" uid="uid://cfwmgifnxh1cg" path="res://scenes/s_kirby_anim_player.tscn" id="2_dm2gl"]
+[ext_resource type="Texture2D" uid="uid://bip1xfst14quq" path="res://textures/at_star_small.tres" id="2_sd37m"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_1j7jm"]
+load_path = "res://.godot/imported/t_kirby_sprite.png-bcad34610802166f77378c346be1f63c.ctex"
+
+[sub_resource type="Animation" id="Animation_5jtdk"]
+resource_name = "crouch"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(37, 19, 16, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_5m7s3"]
+resource_name = "dive"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(19, 37, 16, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_0n6qf"]
+resource_name = "dive_recover"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(37, 19, 16, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_kewj4"]
+resource_name = "fall"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(19, 1, 16, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_vtqrr"]
+resource_name = "idle"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(1, 1, 16, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_n300o"]
+resource_name = "run_loop"
+length = 0.664
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.166, 0.332, 0.498),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [Rect2(37, 1, 16, 16), Rect2(1, 19, 16, 16), Rect2(37, 1, 16, 16), Rect2(19, 19, 16, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_evb3u"]
+resource_name = "splat_h"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(1, 37, 16, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_vf4hs"]
+resource_name = "splat_v"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(37, 19, 16, 16)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_nex0x"]
+_data = {
+"crouch": SubResource("Animation_5jtdk"),
+"dive": SubResource("Animation_5m7s3"),
+"dive_recover": SubResource("Animation_0n6qf"),
+"fall": SubResource("Animation_kewj4"),
+"idle": SubResource("Animation_vtqrr"),
+"run_loop": SubResource("Animation_n300o"),
+"splat_h": SubResource("Animation_evb3u"),
+"splat_v": SubResource("Animation_vf4hs")
+}
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3a304"]
+animation = &"crouch"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_1jsbt"]
+animation = &"dive"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_tk7gr"]
+animation = &"dive_recover"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_10tnt"]
+animation = &"fall"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_46gqb"]
+animation = &"idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_5uimq"]
+animation = &"run_loop"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_fcn3l"]
+animation = &"splat_h"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_y08ii"]
+animation = &"splat_v"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_210rp"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_50jkc"]
+advance_mode = 2
+advance_expression = "is_running"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mugij"]
+advance_mode = 2
+advance_expression = "!is_running"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_3sdm4"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_gnncj"]
+advance_mode = 2
+advance_expression = "!is_diving && !is_dive_stunned"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ckyy8"]
+advance_mode = 2
+advance_expression = "is_falling"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_vw4xf"]
+advance_mode = 2
+advance_expression = "is_diving"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_q22ed"]
+advance_mode = 2
+advance_expression = "is_splat_h"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_eiddi"]
+advance_mode = 2
+advance_expression = "is_splat_h"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_evkc2"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_xh1cy"]
+advance_mode = 2
+advance_expression = "!is_falling || is_splat_v"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_v8hmn"]
+priority = 2
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_b40bs"]
+advance_mode = 2
+advance_expression = "is_crouching"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_dwbqj"]
+advance_mode = 2
+advance_expression = "is_crouching"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_b5e45"]
+advance_mode = 2
+advance_expression = "!is_crouching"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_e4ug0"]
+states/End/position = Vector2(753.333, 99.5876)
+states/Start/position = Vector2(227, 99.0892)
+states/crouch/node = SubResource("AnimationNodeAnimation_3a304")
+states/crouch/position = Vector2(226.111, -11.9231)
+states/dive/node = SubResource("AnimationNodeAnimation_1jsbt")
+states/dive/position = Vector2(629.202, 100.626)
+states/dive_recover/node = SubResource("AnimationNodeAnimation_tk7gr")
+states/dive_recover/position = Vector2(491.01, 299.444)
+states/fall/node = SubResource("AnimationNodeAnimation_10tnt")
+states/fall/position = Vector2(490.333, 100)
+states/idle/node = SubResource("AnimationNodeAnimation_46gqb")
+states/idle/position = Vector2(359, 100)
+states/run_loop/node = SubResource("AnimationNodeAnimation_5uimq")
+states/run_loop/position = Vector2(360.037, -10.6007)
+states/splat_h/node = SubResource("AnimationNodeAnimation_fcn3l")
+states/splat_h/position = Vector2(491.129, -10.5295)
+states/splat_v/node = SubResource("AnimationNodeAnimation_y08ii")
+states/splat_v/position = Vector2(489.867, 191.63)
+transitions = ["Start", "idle", SubResource("AnimationNodeStateMachineTransition_210rp"), "idle", "run_loop", SubResource("AnimationNodeStateMachineTransition_50jkc"), "run_loop", "idle", SubResource("AnimationNodeStateMachineTransition_mugij"), "dive_recover", "idle", SubResource("AnimationNodeStateMachineTransition_3sdm4"), "dive", "dive_recover", SubResource("AnimationNodeStateMachineTransition_gnncj"), "idle", "fall", SubResource("AnimationNodeStateMachineTransition_ckyy8"), "fall", "dive", SubResource("AnimationNodeStateMachineTransition_vw4xf"), "fall", "splat_h", SubResource("AnimationNodeStateMachineTransition_q22ed"), "run_loop", "splat_h", SubResource("AnimationNodeStateMachineTransition_eiddi"), "splat_h", "idle", SubResource("AnimationNodeStateMachineTransition_evkc2"), "fall", "splat_v", SubResource("AnimationNodeStateMachineTransition_xh1cy"), "splat_v", "idle", SubResource("AnimationNodeStateMachineTransition_v8hmn"), "idle", "crouch", SubResource("AnimationNodeStateMachineTransition_b40bs"), "run_loop", "crouch", SubResource("AnimationNodeStateMachineTransition_dwbqj"), "crouch", "idle", SubResource("AnimationNodeStateMachineTransition_b5e45")]
+graph_offset = Vector2(-351.518, -65.7551)
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_t5kxn"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_1424o"]
+states/End/position = Vector2(656, 128)
+states/Start/position = Vector2(347, 128)
+states/small/node = SubResource("AnimationNodeStateMachine_e4ug0")
+states/small/position = Vector2(503.769, 127.704)
+transitions = ["Start", "small", SubResource("AnimationNodeStateMachineTransition_t5kxn")]
+graph_offset = Vector2(-277.231, -4.32377)
+
+[node name="kirby_player" type="Player"]
+sprite = NodePath("sprite")
+anim_tree = NodePath("anim_tree")
+small_star = NodePath("sprite/small_star")
+run_anim_vel = 0.1
+splat_h_vel = 1.0
+
+[node name="sprite" type="Sprite2D" parent="."]
+texture = SubResource("CompressedTexture2D_1j7jm")
+centered = false
+region_enabled = true
+region_rect = Rect2(1, 1, 16, 16)
+
+[node name="kirby_anim_player" parent="sprite" instance=ExtResource("2_dm2gl")]
+
+[node name="small_star" type="CPUParticles2D" parent="sprite"]
+position = Vector2(8, 8)
+emitting = false
+amount = 1
+lifetime = 0.4
+one_shot = true
+texture = ExtResource("2_sd37m")
+emission_shape = 5
+emission_points = PackedVector2Array(8, 0, -8, 0, 0, 8, 0, -8, 5.65, -5.65, 5.65, 5.65, -5.65, -5.65, -5.65, 5.65)
+emission_normals = PackedVector2Array(1, 0, -1, 0, 0, 1, 0, -1, 0.707, -0.707, 0.707, 0.707, -0.707, -0.707, -0.707, 0.707)
+emission_colors = PackedColorArray()
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 300.0
+initial_velocity_max = 300.0
+damping_min = 4000.0
+damping_max = 4000.0
+
+[node name="anim_tree" type="AnimationTree" parent="."]
+root_node = NodePath("../sprite")
+libraries = {
+"": SubResource("AnimationLibrary_nex0x")
+}
+tree_root = SubResource("AnimationNodeStateMachine_1424o")
+advance_expression_base_node = NodePath("..")
+anim_player = NodePath("../sprite/kirby_anim_player")
